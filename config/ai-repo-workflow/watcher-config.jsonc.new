@@ -1,0 +1,17 @@
+{
+  "extends": "../ai-repo-workflow.local.jsonc",
+  // Watcher config template.
+  "repoName": "YL.Prisoners.LordsGrantInfluence",
+  "patchNamePrefix": "YL.Prisoners.LordsGrantInfluence-",
+
+  "pollSeconds": 3,
+  "snapshotAfterPatch": true,
+  "moveFailedPatch": true,
+
+  "paths": {
+    "targetRoot": ".",
+    "downloadsDir": "<RuntimeRoot>/downloads",
+    "failedDir": "<RuntimeRoot>/downloads/failed"
+  }
+}
+

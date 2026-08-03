@@ -1,0 +1,6 @@
+{
+  // Reference-mode target repos use the deployed ai-repo-workflow package instead of vendoring implementation files.
+  // Real machine-specific packageRoot values belong in ignored config/ai-repo-workflow.local.jsonc.
+  "schemaVersion": 1,
+  "packageRoot": ""
+}

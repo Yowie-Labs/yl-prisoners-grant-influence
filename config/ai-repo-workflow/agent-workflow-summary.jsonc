@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "repoName": "YL.Prisoners.LordsGrantInfluence",
+  "defaultInstallMode": "reference",
+  "targetReposVendorImplementationFilesByDefault": false,
+  "entryPoints": {
+    "applyPatch": "repo-tools.ps1 -Command ApplyPatch",
+    "createSnapshot": "repo-tools.ps1 -Command Snapshot",
+    "watchPatches": "repo-tools.ps1 -Command PatchWatcher",
+    "verify": "scripts/verify.ps1"
+  },
+  "paths": {
+    "targetRoot": "."
+  },
+  "extends": "../ai-repo-workflow.local.jsonc"
+}

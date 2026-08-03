@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Module>
+  <Name value="YL Prisoners: Lords Grant Influence" />
+  <Id value="YLPrisonersLordsGrantInfluence" />
+  <Version value="v0.0.1" />
+  <ModuleType value="Community" />
+  <ModuleCategory value="Singleplayer" />
+  <DependedModules>
+    <DependedModule Id="Native" DependentVersion="v1.4.5" />
+    <DependedModule Id="SandBoxCore" DependentVersion="v1.4.5" />
+    <DependedModule Id="Sandbox" DependentVersion="v1.4.5" />
+    <DependedModule Id="CustomBattle" DependentVersion="v1.4.5" />
+    <DependedModule Id="StoryMode" DependentVersion="v1.4.5" />
+    <DependedModule Id="BannerCord" DependentVersion="v0.0.5" />
+  </DependedModules>
+  <SubModules>
+    <SubModule>
+      <Name value="YL Prisoners: Lords Grant Influence" />
+      <DLLName value="YL.Prisoners.LordsGrantInfluence.dll" />
+      <SubModuleClassType value="YL.Prisoners.LordsGrantInfluence.LordsGrantInfluenceSubModule" />
+      <Tags>
+        <Tag key="DedicatedServerType" value="none" />
+        <Tag key="IsNoRenderModeElement" value="false" />
+      </Tags>
+    </SubModule>
+  </SubModules>
+</Module>

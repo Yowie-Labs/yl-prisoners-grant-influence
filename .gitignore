@@ -1,0 +1,94 @@
+bin/
+obj/
+artifacts/
+Directory.Build.props.user
+
+
+
+# AI Repo Workflow diagnostics
+
+# AI Repo Workflow local config
+config/*.local.jsonc
+
+# Keep notification icon assets in git/snapshots.
+!content/
+!content/notification-icons/
+!content/notification-icons/**
+!GUI/
+!GUI/NotificationIcons/
+!GUI/NotificationIcons/**
+content/notification-icons/*.bak
+content/notification-icons/*.before-*.bak
+content/notification-icons/*.moved-*
+
+
+
+Directory.Build.props.user
+
+# BEGIN AI Repo Workflow: safe defaults
+# safe defaults
+downloads/
+snapshots/
+logs/
+artifacts/diagnostics/latest/
+artifacts/diagnostics/latest/README.md
+artifacts/**/latest/
+artifacts/README.md
+artifacts/**/README.md
+*.binlog
+config/ai-repo-workflow.local.jsonc
+tools/ai-repo-workflow/
+tools/ai-repo-workflow/downloads/
+tools/ai-repo-workflow/snapshots/
+tools/ai-repo-workflow/logs/
+*.zip
+repo-hygiene.local.jsonc
+repo-identity.local.jsonc
+*.local.jsonc
+.env
+.env.*
+*.secret.*
+*.secrets.*
+tools/ai-repo-workflow/config/*.local.jsonc
+tools/ai-repo-workflow/config/ai-repo-workflow.local.jsonc
+*.tmp
+*.bak
+*.log
+**/bin/
+**/obj/
+**/node_modules/
+.DS_Store
+Thumbs.db
+*.code-workspace
+.idea/
+# END AI Repo Workflow: safe defaults
+
+# BEGIN AI Repo Workflow: .NET / Visual Studio generated output
+# .NET / Visual Studio generated output
+[Bb]in/
+[Oo]bj/
+**/[Bb]in/
+**/[Oo]bj/
+.vs/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+TestResults/
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+coverage/
+coverage*/
+artifacts/bin/
+artifacts/obj/
+.nuget/packages/
+packages/*
+!packages/build/
+!packages/repositories.config
+*.nupkg
+*.snupkg
+*.symbols.nupkg
+# END AI Repo Workflow: .NET / Visual Studio generated output

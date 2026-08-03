@@ -1,0 +1,17 @@
+{
+  // Copy to repo-identity.local.jsonc to enable the optional local Git identity guard.
+  // repo-identity.local.jsonc is ignored by Git and may contain real local identity values.
+  "expectedUserName": "YOUR_GIT_USER_NAME",
+  "expectedUserEmail": "YOUR_GITHUB_NOREPLY_EMAIL@users.noreply.github.com",
+  "expectedOriginUrl": "git@github-alias:owner/repo.git",
+
+  // Check the effective repository Git config used on this machine.
+  "checkCurrentGitConfig": true,
+
+  // Check origin URL during manual and pre-push validation.
+  "checkOriginUrl": true,
+
+  // Check GIT_COMMITTER_IDENT when this checkout creates or rewrites commits.
+  // Author identity is intentionally not restricted: collaborators may author commits.
+  "checkEffectiveCommitterIdentity": true
+}

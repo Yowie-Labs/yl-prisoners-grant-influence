@@ -1,0 +1,44 @@
+{
+  "extends": "../ai-repo-workflow.local.jsonc",
+  "schemaVersion": 1,
+  "repoName": "YL.Prisoners.LordsGrantInfluence",
+  "commands": [
+    {
+      "name": "clean-yl-prisoners-lords-grant-influence",
+      "command": "dotnet",
+      "arguments": [
+        "clean",
+        "src/YL.Prisoners.LordsGrantInfluence.csproj",
+        "-c",
+        "Release",
+        "-p:Platform=x64"
+      ],
+      "workingDirectory": ".",
+      "runByDefault": true,
+      "profiles": [
+        "default",
+        "full"
+      ]
+    },
+    {
+      "name": "build-yl-prisoners-lords-grant-influence",
+      "command": "dotnet",
+      "arguments": [
+        "build",
+        "src/YL.Prisoners.LordsGrantInfluence.csproj",
+        "-c",
+        "Release",
+        "-p:Platform=x64"
+      ],
+      "workingDirectory": ".",
+      "runByDefault": true,
+      "profiles": [
+        "default",
+        "full"
+      ]
+    }
+  ],
+  "paths": {
+    "targetRoot": "."
+  }
+}

@@ -1,0 +1,42 @@
+#!/bin/sh
+
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null)"
+if [ -z "$repo_root" ]; then
+    echo "pre-push: unable to resolve repository root" >&2
+    exit 1
+fi
+
+if command -v pwsh >/dev/null 2>&1; then
+    powershell_command="pwsh"
+elif command -v powershell.exe >/dev/null 2>&1; then
+    powershell_command="powershell.exe"
+else
+    echo "pre-push: PowerShell was not found; push blocked" >&2
+    exit 1
+fi
+
+"$powershell_command" -NoProfile -ExecutionPolicy Bypass \
+    -File "$repo_root/scripts/Test-GitIdentityGuard.ps1" \
+    -RepoRoot "$repo_root" \
+    -Context PrePush
+identity_status=$?
+
+if [ $identity_status -ne 0 ]; then
+    echo "pre-push: Git identity guard failed; push blocked" >&2
+    echo "pre-push: fix repo-identity.local.jsonc, git config user.name/user.email, or origin URL" >&2
+    echo "pre-push: use git push --no-verify only for an intentional emergency bypass" >&2
+    exit $identity_status
+fi
+
+"$powershell_command" -NoProfile -ExecutionPolicy Bypass \
+    -File "$repo_root/scripts/verify.ps1" \
+    -RepoRoot "$repo_root"
+verify_status=$?
+
+if [ $verify_status -ne 0 ]; then
+    echo "pre-push: repository verification failed; push blocked" >&2
+    echo "pre-push: use git push --no-verify only for an intentional emergency bypass" >&2
+    exit $verify_status
+fi
+
+exit 0

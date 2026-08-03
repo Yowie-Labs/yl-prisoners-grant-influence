@@ -1,0 +1,48 @@
+{
+  "extends": "../ai-repo-workflow.local.jsonc",
+  // Patch application config template.
+  // Copy this to config/ai-repo-workflow/patch-config.jsonc in a reference-mode target repo.
+  "repoName": "YL.Prisoners.LordsGrantInfluence",
+  "patchNamePrefix": "YL.Prisoners.LordsGrantInfluence-",
+
+  // Machine-readable workspace routing contract. Workspace patches default to a
+  // single outer bundle containing routed child patch zips. Individual routed
+  // child patch zips are still supported for focused low-level fixes.
+  "workspacePatchContract": {
+    "defaultPatchMode": "workspace-bundle",
+    "supportsMultiRepoPatchBundle": true,
+    "patchRule": "single-workspace-bundle-preferred",
+    "applyFrom": "workspace-root",
+    "routeBy": "patchNamePrefix"
+  },
+
+  "moveAppliedPatch": true,
+  "moveAppliedWithFailuresPatch": true,
+  "moveFailedPatch": true,
+  "runPatchAfterScript": true,
+  "snapshotAfterPatch": true,
+  "snapshotAfterPatchAfterFailure": true,
+  "includeCurrentPatchRunDiagnostics": true,
+
+  // Retention applies only to patches matching this repo's patch prefix.
+  // Workspace patch routing is configured through snapshot-config.jsonc
+  // workspace.enabled and workspace.projects. Patch zip names should begin
+  // with the actual target project prefix.
+  "maxAppliedPatchesToKeep": 20,
+  "archiveOldAppliedPatches": true,
+  "maxFailedPatchesToKeep": 20,
+  "archiveOldFailedPatches": true,
+
+  "paths": {
+    "targetRoot": ".",
+    "downloadsDir": "<RuntimeRoot>/downloads",
+    "appliedDir": "<RuntimeRoot>/downloads/applied",
+    "appliedWithFailuresDir": "<RuntimeRoot>/downloads/applied-with-failures",
+    "failedDir": "<RuntimeRoot>/downloads/failed-to-apply",
+    "appliedArchiveDir": "<RuntimeRoot>/downloads/archive",
+    "appliedWithFailuresArchiveDir": "<RuntimeRoot>/downloads/archive/applied-with-failures",
+    "failedArchiveDir": "<RuntimeRoot>/downloads/archive/failed-to-apply",
+    "patchRunLogDir": "<RuntimeRoot>/logs/patch-runs"
+  }
+}
+

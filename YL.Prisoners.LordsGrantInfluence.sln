@@ -1,0 +1,63 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.7.11819.209
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YL.Prisoners.LordsGrantInfluence", "src\YL.Prisoners.LordsGrantInfluence.csproj", "{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Beta-Debug|x64 = Beta-Debug|x64
+		Beta-Debug|Any CPU = Beta-Debug|Any CPU
+		Beta-Debug|x86 = Beta-Debug|x86
+		Beta-Release|x64 = Beta-Release|x64
+		Beta-Release|Any CPU = Beta-Release|Any CPU
+		Beta-Release|x86 = Beta-Release|x86
+		Debug|x64 = Debug|x64
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Editor|x64 = Editor|x64
+		Editor|Any CPU = Editor|Any CPU
+		Editor|x86 = Editor|x86
+		Release|x64 = Release|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Beta-Debug|x64.ActiveCfg = Beta-Debug|x64
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Beta-Debug|x64.Build.0 = Beta-Debug|x64
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Beta-Debug|Any CPU.ActiveCfg = Beta-Debug|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Beta-Debug|Any CPU.Build.0 = Beta-Debug|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Beta-Debug|x86.ActiveCfg = Beta-Debug|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Beta-Debug|x86.Build.0 = Beta-Debug|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Beta-Release|x64.ActiveCfg = Beta-Release|x64
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Beta-Release|x64.Build.0 = Beta-Release|x64
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Beta-Release|Any CPU.ActiveCfg = Beta-Release|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Beta-Release|Any CPU.Build.0 = Beta-Release|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Beta-Release|x86.ActiveCfg = Beta-Release|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Beta-Release|x86.Build.0 = Beta-Release|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Debug|x64.ActiveCfg = Debug|x64
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Debug|x64.Build.0 = Debug|x64
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Debug|x86.Build.0 = Debug|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Editor|x64.ActiveCfg = Editor|x64
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Editor|x64.Build.0 = Editor|x64
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Editor|Any CPU.ActiveCfg = Editor|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Editor|Any CPU.Build.0 = Editor|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Editor|x86.ActiveCfg = Editor|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Editor|x86.Build.0 = Editor|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Release|x64.ActiveCfg = Release|x64
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Release|x64.Build.0 = Release|x64
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Release|x86.ActiveCfg = Release|Any CPU
+		{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {32A726DA-FC90-4701-A6FF-287958A07F6E}
+	EndGlobalSection
+EndGlobal

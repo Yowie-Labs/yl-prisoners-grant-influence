@@ -1,0 +1,54 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "AI Repo Workflow: Tools Menu",
+      "type": "shell",
+      "detail": "ai-repo-workflow managed task",
+      "command": "pwsh",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/repo-tools.ps1"],
+      "problemMatcher": []
+    },
+    {
+      "label": "AI Repo Workflow: Verify",
+      "type": "shell",
+      "detail": "ai-repo-workflow managed task",
+      "command": "pwsh",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/repo-tools.ps1", "-Command", "Verify"],
+      "problemMatcher": []
+    },
+    {
+      "label": "AI Repo Workflow: Test",
+      "type": "shell",
+      "detail": "ai-repo-workflow managed task",
+      "command": "pwsh",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/repo-tools.ps1", "-Command", "Test"],
+      "problemMatcher": []
+    },
+    {
+      "label": "AI Repo Workflow: Start Patch Watcher",
+      "type": "shell",
+      "detail": "ai-repo-workflow managed task",
+      "command": "pwsh",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/repo-tools.ps1", "-Command", "PatchWatcher"],
+      "problemMatcher": []
+    },
+    {
+      "label": "AI Repo Workflow: Apply Patch",
+      "type": "shell",
+      "detail": "ai-repo-workflow managed task",
+      "command": "pwsh",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/repo-tools.ps1", "-Command", "ApplyPatch"],
+      "problemMatcher": []
+    },
+    {
+      "label": "AI Repo Workflow: Create Snapshot",
+      "type": "shell",
+      "detail": "ai-repo-workflow managed task",
+      "command": "pwsh",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/repo-tools.ps1", "-Command", "Snapshot"],
+      "problemMatcher": []
+    }
+  ]
+}
+

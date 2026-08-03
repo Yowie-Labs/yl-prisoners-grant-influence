@@ -1,0 +1,35 @@
+{
+  // Copy this file to repo-hygiene.local.jsonc and keep the local file out of Git.
+  // Use fake placeholder values here; put real private terms only in the ignored local file.
+  "denyTerms": [
+    "YOUR_WINDOWS_USERNAME",
+    "YOUR_PRIVATE_PROJECT_NAME",
+    "YOUR_CLIENT_NAME"
+  ],
+
+  // Terms that are legitimate in this repo even if they also appear in denyTerms.
+  "allowTerms": [
+    "YOUR_PUBLIC_SAMPLE_NAME"
+  ],
+
+  // Regex patterns that suppress deny-term findings when the matching context is intentional.
+  "allowPatterns": [
+    "example-only-[A-Za-z0-9_-]+"
+  ],
+
+  "maxFileSizeMB": 5,
+
+  // Optional path allow-lists use repo-relative wildcard paths.
+  "allowPaths": [],
+  "allowZipPaths": [],
+  "allowLargeFilePaths": [],
+
+  // These committed docs/examples intentionally contain placeholder deny terms.
+  // Keep this narrow; put real private terms only in repo-hygiene.local.jsonc.
+  "allowDenyTermPaths": [
+    "repo-hygiene.example.jsonc",
+    "docs/guides/repo-hygiene.md"
+  ],
+
+  "allowSecretPatternPaths": []
+}

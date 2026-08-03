@@ -1,0 +1,187 @@
+{
+  "extends": "../ai-repo-workflow.local.jsonc",
+  // Snapshot config template for target repositories.
+  "repoName": "YL.Prisoners.LordsGrantInfluence",
+  "snapshotNamePrefix": "YL.Prisoners.LordsGrantInfluence-snapshot",
+  "snapshotMode": "review",
+
+  "sourcePaths": [
+    "."
+  ],
+
+  "includePaths": [],
+
+  "includeGlobs": [
+    "README.md",
+    "AGENTS.md",
+    "CONVENTIONS.md",
+    "CLAUDE.md",
+    "repo-identity.example.jsonc",
+    "repo-hygiene.example.jsonc",
+    "repo-snapshot.example.jsonc",
+    ".gitignore",
+    ".gitattributes",
+    ".githooks/pre-commit",
+    ".githooks/pre-merge-commit",
+    ".githooks/pre-applypatch",
+    ".githooks/pre-rebase",
+    ".githooks/pre-push",
+    ".editorconfig",
+    ".vscode/tasks.json",
+    "*.sln",
+    "*.csproj",
+    "*.props",
+    "*.targets",
+    "*.fsproj",
+    "*.vbproj",
+    "package.json",
+    "package-lock.json",
+    "pnpm-lock.yaml",
+    "yarn.lock",
+    "pyproject.toml",
+    "requirements.txt",
+    "Cargo.toml",
+    "Cargo.lock",
+    "go.mod",
+    "go.sum",
+    "src/**",
+    "tests/**",
+    "scripts/**",
+    "docs/**",
+    "config/*.example.jsonc",
+    "*.cs",
+    "*.xaml",
+    "*.ps1",
+    "*.psm1",
+    "*.psd1",
+    "*.md",
+    "*.json",
+    "*.jsonc",
+    "*.yaml",
+    "*.yml",
+    "*.xml",
+    "*.xmp",
+    "*.txt",
+    "artifacts/**/*.log",
+    "artifacts/**/*.txt",
+    "artifacts/**/*.md",
+    "artifacts/**/*.json",
+    "artifacts/**/*.jsonc",
+    "artifacts/**/*.xml",
+    "artifacts/**/*.trx",
+    "artifacts/**/*.sarif",
+    "artifacts/**/*.csv",
+    "artifacts/**/*.yaml",
+    "artifacts/**/*.yml",
+    "TestResults/**/*.trx",
+    "TestResults/**/*.log",
+    "TestResults/**/*.txt",
+    "TestResults/**/*.xml"
+  ],
+
+  "additionalIncludeGlobs": [],
+
+  "excludeGlobs": [
+    ".git/**",
+    ".vs/**",
+    "bin/**",
+    "obj/**",
+    "**/bin/**",
+    "**/obj/**",
+    "node_modules/**",
+    "packages/**",
+    "**/node_modules/**",
+    "**/packages/**",
+    "downloads/**",
+    "snapshots/**",
+    "**/downloads/**",
+    "**/snapshots/**",
+    "untracked/**",
+    "**/untracked/**",
+    ".idea/**",
+    ".cursor/cache/**",
+    "tools/ai-repo-workflow/**",
+    "artifacts/**/bin/**",
+    "artifacts/**/obj/**",
+    "artifacts/**/publish/**",
+    "repo-hygiene.local.jsonc",
+    "repo-identity.local.jsonc",
+    "config/*.local.jsonc",
+    "*.local.jsonc",
+    "*.local.props",
+    "Directory.Build.props.user",
+    "*.user",
+    "*.suo",
+    "*.dll",
+    "*.pdb",
+    "*.exe",
+    "*.zip",
+    "*.7z",
+    "*.rar",
+    "*.nupkg",
+    "*.snupkg",
+    "*.msix",
+    "*.appx",
+    "*.png",
+    "*.jpg",
+    "*.jpeg",
+    "*.webp",
+    "*.gif",
+    "*.mp4",
+    "*.mp3",
+    "*.wav",
+    "*.cache",
+    "*.tmp",
+    ".env",
+    ".env.*",
+    "*.secret.*",
+    "*.secrets.*"
+  ],
+
+  "additionalExcludeGlobs": [],
+
+  "includeWorkflowPackage": false,
+  "includeMedia": false,
+  "includeBinaryLogs": false,
+
+  // Optional normal-snapshot delegation for workspace/orchestrator repos.
+  // When set, normal Create Snapshot calls this repo-owned script instead of
+  // crawling the current repo directly. Explicit -OutputPath calls still use
+  // the built-in snapshot implementation. Arguments may be positional strings
+  // or PowerShell-style named/switch pairs such as "-SnapshotProfile", "full".
+  "delegateSnapshotScript": "",
+  "delegateSnapshotArguments": [],
+
+  // Generic workspace snapshot mode. A workspace snapshot creates a small
+  // snapshot of this repo, calls each linked project's own snapshot script,
+  // and bundles those child snapshot zips into one outer workspace snapshot.
+  // This is a snapshot/review contract only. Patch application still defaults
+  // to one workspace bundle containing routed child patch zips. Individual
+  // child patch zips are still supported for focused single-repo fixes.
+  "workspace": {
+    "enabled": false,
+    "includeSelfSnapshot": true,
+    "projects": [
+      // {
+      //   "name": "ExampleProject",
+      //   "path": "../ExampleProject",
+      //   "required": true,
+      //   "snapshotScript": "<PackageRoot>/scripts/New-RepoSnapshot.ps1",
+      //   "snapshotArguments": []
+      // }
+    ]
+  },
+
+  // Snapshot rotation only operates on files named:
+  // <project>-snapshot-yyyyMMdd-HHmmss.zip
+  "archiveFolderName": "_archive",
+  "maxArchivedSnapshotsPerProject": 5,
+  "keepLatestSnapshotInRoot": true,
+
+  "paths": {
+    "targetRoot": ".",
+    "outputDir": "<RuntimeRoot>/snapshots",
+    "archiveDir": "<RuntimeRoot>/snapshots/_archive"
+  }
+}
+

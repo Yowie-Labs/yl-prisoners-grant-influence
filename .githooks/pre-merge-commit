@@ -1,0 +1,31 @@
+#!/bin/sh
+
+hook_name="$(basename "$0")"
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null)"
+if [ -z "$repo_root" ]; then
+    echo "$hook_name: unable to resolve repository root" >&2
+    exit 1
+fi
+
+if command -v pwsh >/dev/null 2>&1; then
+    powershell_command="pwsh"
+elif command -v powershell.exe >/dev/null 2>&1; then
+    powershell_command="powershell.exe"
+else
+    echo "$hook_name: PowerShell was not found; commit blocked" >&2
+    exit 1
+fi
+
+"$powershell_command" -NoProfile -ExecutionPolicy Bypass \
+    -File "$repo_root/scripts/Test-GitIdentityGuard.ps1" \
+    -RepoRoot "$repo_root" \
+    -Context Commit
+status=$?
+
+if [ $status -ne 0 ]; then
+    echo "$hook_name: Git identity guard failed; commit blocked" >&2
+    echo "$hook_name: fix repo-identity.local.jsonc or git config user.name/user.email" >&2
+    exit $status
+fi
+
+exit 0

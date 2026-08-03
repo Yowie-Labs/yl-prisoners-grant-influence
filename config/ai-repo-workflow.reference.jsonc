@@ -1,0 +1,5 @@
+// Set packageRoot in ignored config/ai-repo-workflow.local.jsonc after installing ai-repo-workflow.
+{
+  "schemaVersion": 1,
+  "packageRoot": ""
+}

@@ -1,0 +1,152 @@
+<#
+.SYNOPSIS
+Reference-mode AI Repo Workflow tools menu.
+#>
+
+[CmdletBinding()]
+param(
+    [Parameter()]
+    [string] $RepoRoot
+)
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
+
+function Remove-AiRepoWorkflowJsoncComments {
+    param([Parameter(Mandatory)] [string] $Text)
+    $builder = [System.Text.StringBuilder]::new()
+    $inString = $false
+    $escape = $false
+    $inLineComment = $false
+    $inBlockComment = $false
+    for ($index = 0; $index -lt $Text.Length; $index++) {
+        $char = $Text[$index]
+        $next = if ($index + 1 -lt $Text.Length) { $Text[$index + 1] } else { [char]0 }
+        if ($inLineComment) {
+            if ($char -eq "`r" -or $char -eq "`n") { $inLineComment = $false; [void] $builder.Append($char) }
+            continue
+        }
+        if ($inBlockComment) {
+            if ($char -eq '*' -and $next -eq '/') { $inBlockComment = $false; $index++ }
+            elseif ($char -eq "`r" -or $char -eq "`n") { [void] $builder.Append($char) }
+            continue
+        }
+        if ($inString) {
+            [void] $builder.Append($char)
+            if ($escape) { $escape = $false }
+            elseif ($char -eq '\') { $escape = $true }
+            elseif ($char -eq '"') { $inString = $false }
+            continue
+        }
+        if ($char -eq '"') { $inString = $true; [void] $builder.Append($char); continue }
+        if ($char -eq '/' -and $next -eq '/') { $inLineComment = $true; $index++; continue }
+        if ($char -eq '/' -and $next -eq '*') { $inBlockComment = $true; $index++; continue }
+        [void] $builder.Append($char)
+    }
+    return $builder.ToString()
+}
+
+function Read-AiRepoWorkflowLocalConfig {
+    param([Parameter(Mandatory)] [string] $RootPath)
+    foreach ($relativePath in @('config/ai-repo-workflow.local.jsonc', 'config/ai-repo-workflow.reference.jsonc')) {
+        $path = Join-Path -Path $RootPath -ChildPath $relativePath
+        if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { continue }
+        $raw = Get-Content -LiteralPath $path -Raw
+        $json = Remove-AiRepoWorkflowJsoncComments -Text $raw
+        if ([string]::IsNullOrWhiteSpace($json)) { continue }
+        return $json | ConvertFrom-Json -Depth 32
+    }
+    return $null
+}
+
+function Get-AiRepoWorkflowConfigValue {
+    param(
+        [Parameter()] [object] $Config,
+        [Parameter(Mandatory)] [string[]] $Names
+    )
+    if ($null -eq $Config) { return '' }
+    foreach ($name in $Names) {
+        $property = $Config.PSObject.Properties[$name]
+        if ($null -ne $property -and -not [string]::IsNullOrWhiteSpace([string] $property.Value)) {
+            return ([string] $property.Value).Trim()
+        }
+    }
+    $pathsProperty = $Config.PSObject.Properties['paths']
+    if ($null -ne $pathsProperty -and $null -ne $pathsProperty.Value) {
+        foreach ($name in $Names) {
+            $property = $pathsProperty.Value.PSObject.Properties[$name]
+            if ($null -ne $property -and -not [string]::IsNullOrWhiteSpace([string] $property.Value)) {
+                return ([string] $property.Value).Trim()
+            }
+        }
+    }
+    return ''
+}
+
+
+if ([string]::IsNullOrWhiteSpace($RepoRoot)) {
+    $RepoRoot = Split-Path -Path $PSScriptRoot -Parent
+}
+
+$repoRootFull = [System.IO.Path]::GetFullPath($RepoRoot)
+$repoToolsPath = Join-Path -Path $repoRootFull -ChildPath "repo-tools.ps1"
+
+if (-not (Test-Path -LiteralPath $repoToolsPath -PathType Leaf)) {
+    throw "Missing repo-tools.ps1: $repoToolsPath"
+}
+
+while ($true) {
+    Write-Host ""
+    Write-Host "AI Repo Workflow Tools"
+    Write-Host ""
+    Write-Host "Patch / snapshot workflow:"
+    Write-Host "  1. Start patch watcher"
+    Write-Host "  2. Apply patch"
+    Write-Host "  3. Create snapshot / review archive"
+    Write-Host "  4. Create AI patch zip"
+    Write-Host "  5. Create Git review patch"
+    Write-Host "  6. Show patch/snapshot/runtime folders"
+    Write-Host ""
+    Write-Host "Daily checks:"
+    Write-Host "  7. Verify repo"
+    Write-Host "  8. Check repo hygiene"
+    Write-Host "  9. Check repo conventions / polish"
+    Write-Host ""
+    Write-Host "Help:"
+    Write-Host "  10. Show common manual commands"
+    Write-Host "  0. Exit"
+    Write-Host ""
+
+    $choice = Read-Host "Choose an option"
+    switch ($choice) {
+        "1" { & $repoToolsPath -Command PatchWatcher }
+        "2" {
+            $patchPath = Read-Host "Patch path (blank = configured downloads folder)"
+            if ([string]::IsNullOrWhiteSpace($patchPath)) {
+                & $repoToolsPath -Command ApplyPatch
+            }
+            else {
+                & $repoToolsPath -Command ApplyPatch -PatchPath $patchPath
+            }
+        }
+        "3" { & $repoToolsPath -Command Snapshot }
+        "4" { & $repoToolsPath -Command AiPatchZip }
+        "5" { & $repoToolsPath -Command GitReviewPatch }
+        "6" { & $repoToolsPath -Command Paths }
+        "7" { & $repoToolsPath -Command Verify }
+        "8" { & $repoToolsPath -Command Hygiene }
+        "9" { & $repoToolsPath -Command Conventions }
+        "10" {
+            Write-Host ""
+            Write-Host "Common manual commands"
+            Write-Host ""
+            Write-Host ".\repo-tools.ps1"
+            Write-Host ".\repo-tools.ps1 -Command Snapshot"
+            Write-Host ".\repo-tools.ps1 -Command ApplyPatch"
+            Write-Host ".\repo-tools.ps1 -Command Verify"
+            Write-Host "pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify.ps1"
+        }
+        "0" { break }
+        default { Write-Host "Unknown option: $choice" }
+    }
+}

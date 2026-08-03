@@ -1,0 +1,31 @@
+{
+  "repoName": "YL.Prisoners.LordsGrantInfluence",
+  "patchNamePrefix": "YL.Prisoners.LordsGrantInfluence-",
+  "moveAppliedPatch": true,
+  "moveFailedPatch": true,
+  "createWorkflowDirectories": true,
+  "runPatchAfterScript": true,
+  "snapshotAfterPatch": true,
+  "snapshotAfterPatchAfterFailure": true,
+  "includeCurrentPatchRunDiagnostics": true,
+  "maxAppliedPatchesToKeep": 20,
+  "archiveOldAppliedPatches": true,
+  "maxFailedPatchesToKeep": 20,
+  "archiveOldFailedPatches": true,
+  "paths": {
+    "targetRoot": ".",
+    "downloadsDir": "<RuntimeRoot>/downloads",
+    "appliedDir": "<RuntimeRoot>/downloads/applied",
+    "failedDir": "<RuntimeRoot>/downloads/failed",
+    "patchRunLogDir": "<RuntimeRoot>/logs/patch-runs"
+  },
+  "workspacePatchContract": {
+    "defaultPatchMode": "workspace-bundle",
+    "supportsMultiRepoPatchBundle": true,
+    "patchRule": "single-workspace-bundle-preferred",
+    "applyFrom": "workspace-root",
+    "routeBy": "patchNamePrefix"
+  },
+  "extends": "../ai-repo-workflow.local.jsonc",
+  "moveAppliedWithFailuresPatch": true
+}
