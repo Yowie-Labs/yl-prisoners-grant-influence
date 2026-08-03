@@ -11,15 +11,15 @@ Directory.Build.props.user
 config/*.local.jsonc
 
 # Keep notification icon assets in git/snapshots.
-!content/
-!content/notification-icons/
-!content/notification-icons/**
+!module/
+!module/notification-icons/
+!module/notification-icons/**
 !GUI/
 !GUI/NotificationIcons/
 !GUI/NotificationIcons/**
-content/notification-icons/*.bak
-content/notification-icons/*.before-*.bak
-content/notification-icons/*.moved-*
+module/notification-icons/*.bak
+module/notification-icons/*.before-*.bak
+module/notification-icons/*.moved-*
 
 
 

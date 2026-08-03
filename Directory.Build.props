@@ -5,11 +5,6 @@
           Condition="Exists('$(MSBuildThisFileDirectory)Directory.Build.props.user')" />
 
   <PropertyGroup>
-    <ThisModuleId Condition="'$(ThisModuleId)' == ''">YLPrisonersLordsGrantInfluence</ThisModuleId>
-    <DevArtifactsRoot>$(MSBuildThisFileDirectory)artifacts\</DevArtifactsRoot>
-    <ModuleOutputRoot>$(DevArtifactsRoot)module\$(ThisModuleId)\</ModuleOutputRoot>
-    <DevBinDir>$(ModuleOutputRoot)bin\Win64_Shipping_Client\</DevBinDir>
-
     <BannerCordPackageSource Condition="'$(BannerCordPackageSource)' == '' and '$(BANNERCORD_NUGET_FEED)' != ''">$(BANNERCORD_NUGET_FEED)</BannerCordPackageSource>
     <BannerCordPackageSource Condition="'$(BannerCordPackageSource)' == ''">$(MSBuildThisFileDirectory)..\Bannercord.Core\artifacts\packages</BannerCordPackageSource>
     <RestoreAdditionalProjectSources Condition="Exists('$(BannerCordPackageSource)')">$(RestoreAdditionalProjectSources);$(BannerCordPackageSource)</RestoreAdditionalProjectSources>

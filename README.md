@@ -14,7 +14,7 @@ The module is stateless. Removing or disabling it stops future awards and leaves
 
 ## Dependencies
 
-- Bannerlord 1.4.5 modules declared in `content/SubModule.xml`;
+- Bannerlord 1.4.5 modules declared in `module/SubModule.xml`;
 - installed `BannerCord` module version 0.0.5 or later;
 - `BannerCord.Core` 0.0.5 package for compilation only. The DLL is supplied at runtime by BannerCord.
 
@@ -26,13 +26,15 @@ Configure `BannerlordGameRoot` through the sibling `Skaldflow.Workspace/Skaldflo
 dotnet build .\src\YL.Prisoners.LordsGrantInfluence.csproj -c Release -p:Platform=x64
 ```
 
-The deployable module is written to:
+The project writes its DLL directly into the complete deployable module directory:
 
 ```text
-artifacts/module/YLPrisonersLordsGrantInfluence/
+module/bin/Win64_Shipping_Client/YL.Prisoners.LordsGrantInfluence.dll
 ```
 
-From `Skaldflow.Workspace`, it can be built and installed with:
+After a successful build, the entire `module/` directory can be copied manually to `Bannerlord/Modules/YLPrisonersLordsGrantInfluence/`.
+
+After configuring the shared BannerCord publisher local settings, it can be built, backed up, and installed from `Skaldflow.Workspace` with:
 
 ```powershell
 pwsh -NoProfile -ExecutionPolicy Bypass `

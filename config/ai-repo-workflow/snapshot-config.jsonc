@@ -29,7 +29,7 @@
     "*.csproj",
     "*.props",
     "src/**",
-    "content/**",
+    "module/**",
     "config/ai-repo-workflow/**",
     "config/*.jsonc",
     "docs/**",
