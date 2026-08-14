@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Module>
-  <Name value="YL Prisoners: Lords Grant Influence" />
-  <Id value="YLPrisonersLordsGrantInfluence" />
+  <Name value="YL.Prisoners.LordsGrantInfluence" />
+  <Id value="YL.Prisoners.LordsGrantInfluence" />
   <Version value="v0.0.1" />
   <ModuleType value="Community" />
   <ModuleCategory value="Singleplayer" />
@@ -15,7 +15,7 @@
   </DependedModules>
   <SubModules>
     <SubModule>
-      <Name value="YL Prisoners: Lords Grant Influence" />
+      <Name value="YL.Prisoners.LordsGrantInfluence" />
       <DLLName value="YL.Prisoners.LordsGrantInfluence.dll" />
       <SubModuleClassType value="YL.Prisoners.LordsGrantInfluence.LordsGrantInfluenceSubModule" />
       <Tags>

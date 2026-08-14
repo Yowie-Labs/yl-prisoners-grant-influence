@@ -19,14 +19,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BannerCord.Core">
-      <Version>0.0.5</Version>
-      <PrivateAssets>all</PrivateAssets>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="TaleWorlds.CampaignSystem">
@@ -39,6 +31,10 @@
     </Reference>
     <Reference Include="TaleWorlds.Library">
       <HintPath>$(TaleWorldsAssemblyDir)\TaleWorlds.Library.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="TaleWorlds.Localization">
+      <HintPath>$(TaleWorldsAssemblyDir)\TaleWorlds.Localization.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="TaleWorlds.MountAndBlade">
@@ -55,10 +51,13 @@
     <None Include="..\module\SubModule.xml" Link="module\SubModule.xml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bannercord.Core\src\Bannercord.Core.csproj" />
+  </ItemGroup>
+
 
 
   <Target Name="EnsureBannerCordRuntimeIsNotPrivatelyCopied" AfterTargets="Build">
-    <Error Condition="Exists('$(TargetDir)BannerCord.Core.dll')"
-           Text="YL.Prisoners.LordsGrantInfluence must not publish a private BannerCord.Core.dll. The required BannerCord module owns the runtime assembly." />
+    <Error Condition="Exists('$(TargetDir)BannerCord.Core.dll')" Text="YL.Prisoners.LordsGrantInfluence must not publish a private BannerCord.Core.dll. The required BannerCord module owns the runtime assembly." />
   </Target>
 </Project>
