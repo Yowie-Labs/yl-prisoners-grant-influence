@@ -23,3 +23,29 @@ and does not install modules automatically.
 Patch workflow coverage also proves that file application is reported separately
 from post-apply verification, test, build, diagnostics, and snapshot outcomes.
 Applied-but-unsuccessful archives must never be labeled as failures to apply.
+
+# Tests
+
+# Tests
+
+# Tests
+
+<!-- ai-repo-workflow:tests-readme:start -->
+## ai-repo-workflow smoke test
+
+This repository uses the reference-mode ai-repo-workflow smoke test in
+`tests/GeneratedRepoSmoke.Tests.ps1`. It verifies that the supported repository
+entry points and reference-mode configuration exist without vendoring the
+workflow implementation.
+
+Use the repository entry points rather than ai-repo-workflow source scripts:
+
+```powershell
+.\repo-tools.ps1 -Command Verify
+.\repo-tools.ps1 -Command Test
+```
+
+Detailed command diagnostics are written under `artifacts/diagnostics/latest`.
+Do not copy test-suite documentation from the ai-repo-workflow source repository
+into this consumer repository.
+<!-- ai-repo-workflow:tests-readme:end -->

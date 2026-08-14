@@ -29,7 +29,7 @@ $vendoredScriptsRoot = Join-Path -Path $repoRootFull -ChildPath "tools/ai-repo-w
 $findings = [System.Collections.Generic.List[string]]::new()
 $allowedRootEntryPoints = @("repo-tools.ps1")
 $allowedVendoredEntryPoints = @("patch.ps1", "snapshot.ps1", "Watch-Patches.ps1")
-$allowedVendoredSupportScripts = @("PatchWorkflow.Common.ps1")
+$allowedVendoredSupportScripts = @("PatchWorkflow.Common.ps1", "WorkstreamRouting.Common.ps1")
 $preferredVerbs = @(
     "Get",
     "Set",

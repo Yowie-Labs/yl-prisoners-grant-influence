@@ -1,9 +1,11 @@
 {
-  "schemaVersion": 1,
+  // Repository-owned snapshot overrides. SAFE TO CUSTOMIZE.
+  // Package runtime defaults update independently; prefer additionalIncludeGlobs/additionalExcludeGlobs to extend them.
+  // Explicit includeGlobs/excludeGlobs, when present, intentionally replace package defaults.
+"schemaVersion": 1,
   "repoName": "YL.Prisoners.LordsGrantInfluence",
   "projectName": "YL.Prisoners.LordsGrantInfluence",
   "snapshotNamePrefix": "YL.Prisoners.LordsGrantInfluence-snapshot",
-  "snapshotMode": "review",
   "includeWorkflowPackage": false,
   "includeMedia": false,
   "includeBinaryLogs": false,
@@ -55,7 +57,6 @@
   ],
   "extends": "../ai-repo-workflow.local.jsonc",
   "sourcePaths": ".",
-  "includePaths": null,
   "additionalIncludeGlobs": null,
   "additionalExcludeGlobs": null,
   "delegateSnapshotScript": "",
@@ -65,7 +66,5 @@
     "includeSelfSnapshot": true,
     "projects": null
   },
-  "archiveFolderName": "_archive",
-  "maxArchivedSnapshotsPerProject": 5,
-  "keepLatestSnapshotInRoot": true
+  "configSchemaVersion": 2
 }

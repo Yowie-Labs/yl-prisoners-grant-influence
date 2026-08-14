@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Checks the public source repo for obvious accidental runtime or private content.
 
@@ -642,7 +642,7 @@ $uncServerSharePattern = $uncRootPattern + $uncPathSegmentPattern + $uncPathSepa
 $absolutePathPatterns = @(
     ('(?i)(?<![A-Za-z0-9_<>$])(?:' + $drivePrefixPattern + ')[^"''\s)]{2,}'),
     ('(?i)(?<![A-Za-z0-9_<>$])(?:' + $unixHomeRootPattern + ')[^"''\s)]{2,}'),
-    ('(?i)(?<![A-Za-z0-9_<>$])' + $uncServerSharePattern)
+    ('(?i)(?<![A-Za-z0-9_<>$.])' + $uncServerSharePattern)
 )
 
 $builtInAllowAbsolutePathPatterns = @(

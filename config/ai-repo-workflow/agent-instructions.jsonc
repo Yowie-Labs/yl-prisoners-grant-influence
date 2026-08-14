@@ -1,0 +1,12 @@
+{
+  // Repository-owned agent instruction configuration. SAFE TO CUSTOMIZE.
+  // ai-repo-workflow package updates preserve these selections.
+  // Manage interactively with: ./repo-tools.ps1 -Command AgentInstructions
+"schemaVersion": 1,
+  "enabledProfiles": [
+    "csharp/default@1"
+  ],
+  "ignoredDetections": [],
+  "profileRoots": [],
+  "additionalInstructionFiles": []
+}

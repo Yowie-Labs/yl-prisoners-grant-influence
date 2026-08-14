@@ -40,11 +40,11 @@ function Resolve-WorkflowStatusSourceRoot {
 $SourceRoot = Resolve-WorkflowStatusSourceRoot -ConfiguredSourceRoot $SourceRoot
 
 $script:TargetOwnedWorkflowConfigPaths = @(
-    "config/agent-workflow-summary.jsonc",
     "config/patch-config.jsonc",
     "config/snapshot-config.jsonc",
     "config/watcher-config.jsonc",
-    "config/test-config.jsonc"
+    "config/test-config.jsonc",
+    "config/agent-instructions.jsonc"
 )
 
 function Test-TargetOwnedWorkflowConfigPath {
@@ -274,65 +274,9 @@ function Get-WorkflowMissingConfigFields {
         [Parameter(Mandatory)] [string] $SourcePackageRoot
     )
 
-    $missing = [System.Collections.Generic.List[string]]::new()
-
-    foreach ($relativePath in $script:TargetOwnedWorkflowConfigPaths) {
-        $targetPath = Join-Path -Path $TargetPackageRoot -ChildPath $relativePath
-
-        if (-not (Test-Path -LiteralPath $targetPath -PathType Leaf) -or
-            -not ((Get-WorkflowItemCount -Value @(Get-WorkflowConfigDefaultPaths -SourcePackageRoot $SourcePackageRoot -RelativePath $relativePath | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf })) -gt 0)) {
-            continue
-        }
-
-        try {
-            $targetConfig = Read-WorkflowJsoncHashtable -Path $targetPath
-
-            foreach ($sourcePath in (Get-WorkflowConfigDefaultPaths -SourcePackageRoot $SourcePackageRoot -RelativePath $relativePath)) {
-                if (-not (Test-Path -LiteralPath $sourcePath -PathType Leaf)) {
-                    continue
-                }
-
-                $sourceConfig = Read-WorkflowJsoncHashtable -Path $sourcePath
-
-                foreach ($key in $sourceConfig.Keys) {
-                    if (-not $targetConfig.Contains($key)) {
-                        $entry = "${relativePath}: $key"
-                        if (-not $missing.Contains($entry)) {
-                            $missing.Add($entry)
-                        }
-                    }
-                }
-            }
-        }
-        catch {
-            $missing.Add("${relativePath}: unable to compare schema fields ($($_.Exception.Message))")
-        }
-    }
-
-    return [string[]] $missing.ToArray()
-}
-
-function Get-WorkflowConfigDefaultPaths {
-    param(
-        [Parameter(Mandatory)] [string] $SourcePackageRoot,
-        [Parameter(Mandatory)] [string] $RelativePath
-    )
-
-    $paths = [System.Collections.Generic.List[string]]::new()
-    $paths.Add((Join-Path -Path $SourcePackageRoot -ChildPath $RelativePath))
-
-    $templateName = switch ($RelativePath.Replace('\', '/')) {
-        "config/patch-config.jsonc" { "patch-config.template.jsonc" }
-        "config/snapshot-config.jsonc" { "snapshot-config.template.jsonc" }
-        "config/watcher-config.jsonc" { "watcher-config.template.jsonc" }
-        default { "" }
-    }
-
-    if (-not [string]::IsNullOrWhiteSpace($templateName)) {
-        $paths.Add((Join-Path -Path $SourcePackageRoot -ChildPath "templates/$templateName"))
-    }
-
-    return [string[]] $paths.ToArray()
+    # Repository-owned configs are sparse override/extension files by design.
+    # Missing package-default properties are therefore not a stale-schema signal.
+    return [string[]] @()
 }
 
 function Test-WorkflowPackageRoot {
@@ -492,5 +436,5 @@ else {
 
 if ($status -eq "UpdateAvailable") { Write-Warning "ai-repo-workflow update available." }
 if ((Get-WorkflowItemCount -Value $configChanges) -gt 0) { Write-Warning "Target-owned workflow config differs from the deployed package; this is expected and will be preserved during update." }
-if ((Get-WorkflowItemCount -Value $missingConfigFields) -gt 0) { Write-Warning "Target workflow config is missing deployed schema fields; update will try to merge them." }
+if ((Get-WorkflowItemCount -Value $missingConfigFields) -gt 0) { Write-Warning "Repository-owned workflow config requires an explicit migration review." }
 if ((Get-WorkflowItemCount -Value $localChanges) -gt 0) { Write-Warning "Suspicious local vendored workflow changes detected. Update will require -Force after review." }

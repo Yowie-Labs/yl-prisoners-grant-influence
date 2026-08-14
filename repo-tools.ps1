@@ -12,18 +12,48 @@ with this repo's config files.
 [CmdletBinding()]
 param(
     [Parameter()]
-    [ValidateSet('Menu','PatchWatcher','ApplyPatch','Snapshot','AiPatchZip','GitReviewPatch','ReviewReset','Verify','Test','Hygiene','Conventions','Paths','Update','Status')]
+    [ValidateSet('Menu','PatchWatcher','ValidatePatch','ApplyPatch','Snapshot','AiPatchZip','WorkspacePatchBundle','ValidateWorkspacePatchBundle','GitReviewPatch','ReviewReset','Verify','Test','Hygiene','Conventions','Paths','Update','Status','AgentInstructions')]
     [string] $Command = 'Menu',
 
     [Parameter()]
     [string] $PatchPath,
 
     [Parameter()]
-    [switch] $Once
+    [switch] $Interactive,
+
+    [Parameter()]
+    [switch] $Once,
+
+    [Parameter()]
+    [string[]] $ChildPatchPath = @(),
+
+    [Parameter()]
+    [string] $OutputPath,
+
+    [Parameter()]
+    [string] $WorkstreamId,
+
+    [Parameter()]
+    [string] $WorkstreamPurpose,
+
+    [Parameter()]
+    [string] $PatchId,
+
+    [Parameter()]
+    [string] $TargetRepository,
+
+    [Parameter()]
+    [string] $BaseReference,
+
+    [Parameter()]
+    [switch] $Force
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+if (Get-Variable -Name PSNativeCommandUseErrorActionPreference -ErrorAction SilentlyContinue) {
+    $PSNativeCommandUseErrorActionPreference = $false
+}
 
 $script:RepoRoot = [System.IO.Path]::GetFullPath($PSScriptRoot)
 
@@ -161,13 +191,26 @@ function Get-RepoToolsShell {
 function Invoke-AiRepoWorkflowScript {
     param(
         [Parameter(Mandatory)] [string] $RelativePath,
-        [Parameter()] [string[]] $ArgumentList = @()
+        [Parameter()] [string[]] $ArgumentList = @(),
+        [Parameter()] [switch] $ExitWithChildCode
     )
 
     $scriptPath = Resolve-AiRepoWorkflowScript -RelativePath $RelativePath
     $powerShellExe = Get-RepoToolsShell
     Push-Location -LiteralPath $script:RepoRoot
     try {
+        if ($ExitWithChildCode) {
+            # ApplyPatch owns its final color-coded banner. Stream it directly so
+            # the launcher neither strips the color nor prints anything afterward.
+            & $powerShellExe -NoProfile -ExecutionPolicy Bypass -File $scriptPath @ArgumentList
+            $exitCode = $LASTEXITCODE
+            if ($exitCode -ne 0) {
+                exit $exitCode
+            }
+
+            return
+        }
+
         $output = @(& $powerShellExe -NoProfile -ExecutionPolicy Bypass -File $scriptPath @ArgumentList 2>&1)
         $exitCode = $LASTEXITCODE
         foreach ($line in $output) {
@@ -229,18 +272,70 @@ switch ($Command) {
         if ($Once) { $argumentList += '-Once' }
         Invoke-AiRepoWorkflowScript -RelativePath 'scripts/Start-PatchWatcher.ps1' -ArgumentList $argumentList
     }
+    'ValidatePatch' {
+        if ([string]::IsNullOrWhiteSpace($PatchPath)) {
+            throw 'ValidatePatch requires -PatchPath.'
+        }
+        $argumentList = @(
+            '-ConfigPath', (Get-RepoConfigPath -Name 'patch-config.jsonc'),
+            '-PatchPath', $PatchPath,
+            '-ValidateOnly',
+            '-SkipSnapshot',
+            '-NoMove',
+            '-SkipPatchAfter',
+            '-SuppressFailureDiagnostic'
+        )
+        Invoke-AiRepoWorkflowScript `
+            -RelativePath 'scripts/Invoke-RepoPatch.ps1' `
+            -ArgumentList $argumentList `
+            -ExitWithChildCode
+    }
     'ApplyPatch' {
         $argumentList = @('-ConfigPath', (Get-RepoConfigPath -Name 'patch-config.jsonc'))
         if (-not [string]::IsNullOrWhiteSpace($PatchPath)) {
             $argumentList += @('-PatchPath', $PatchPath)
         }
-        Invoke-AiRepoWorkflowScript -RelativePath 'scripts/Invoke-RepoPatch.ps1' -ArgumentList $argumentList
+        if ($Interactive) {
+            $argumentList += '-Interactive'
+        }
+        Invoke-AiRepoWorkflowScript `
+            -RelativePath 'scripts/Invoke-RepoPatch.ps1' `
+            -ArgumentList $argumentList `
+            -ExitWithChildCode
     }
     'Snapshot' {
         Invoke-AiRepoWorkflowScript -RelativePath 'scripts/New-RepoSnapshot.ps1' -ArgumentList @('-ConfigPath', (Get-RepoConfigPath -Name 'snapshot-config.jsonc'))
     }
     'AiPatchZip' {
-        Invoke-AiRepoWorkflowScript -RelativePath 'scripts/New-AiPatchZip.ps1' -ArgumentList @('-RepoRoot', $script:RepoRoot, '-IncludeUntracked')
+        $argumentList = @('-RepoRoot', $script:RepoRoot, '-IncludeUntracked')
+        if (-not [string]::IsNullOrWhiteSpace($WorkstreamId)) { $argumentList += @('-WorkstreamId', $WorkstreamId) }
+        if (-not [string]::IsNullOrWhiteSpace($WorkstreamPurpose)) { $argumentList += @('-WorkstreamPurpose', $WorkstreamPurpose) }
+        if (-not [string]::IsNullOrWhiteSpace($PatchId)) { $argumentList += @('-PatchId', $PatchId) }
+        if (-not [string]::IsNullOrWhiteSpace($TargetRepository)) { $argumentList += @('-TargetRepository', $TargetRepository) }
+        if (-not [string]::IsNullOrWhiteSpace($BaseReference)) { $argumentList += @('-BaseReference', $BaseReference) }
+        Invoke-AiRepoWorkflowScript -RelativePath 'scripts/New-AiPatchZip.ps1' -ArgumentList $argumentList
+    }
+    'WorkspacePatchBundle' {
+        if (@($ChildPatchPath).Count -eq 0) {
+            throw 'WorkspacePatchBundle requires at least one -ChildPatchPath.'
+        }
+        if ([string]::IsNullOrWhiteSpace($OutputPath)) {
+            throw 'WorkspacePatchBundle requires -OutputPath.'
+        }
+        $scriptPath = Resolve-AiRepoWorkflowScript -RelativePath 'scripts/New-WorkspacePatchBundle.ps1'
+        $parameters = @{
+            ChildPatchPath = [string[]] @($ChildPatchPath)
+            OutputPath = $OutputPath
+        }
+        if ($Force) { $parameters['Force'] = $true }
+        & $scriptPath @parameters
+    }
+    'ValidateWorkspacePatchBundle' {
+        if ([string]::IsNullOrWhiteSpace($PatchPath)) {
+            throw 'ValidateWorkspacePatchBundle requires -PatchPath.'
+        }
+        $scriptPath = Resolve-AiRepoWorkflowScript -RelativePath 'scripts/Test-WorkspacePatchBundle.ps1'
+        & $scriptPath -Path $PatchPath
     }
     'GitReviewPatch' {
         Invoke-AiRepoWorkflowScript -RelativePath 'scripts/New-GitReviewPatch.ps1' -ArgumentList @('-RepoRoot', $script:RepoRoot)
@@ -268,6 +363,9 @@ switch ($Command) {
     }
     'Status' {
         & (Join-Path -Path $script:RepoRoot -ChildPath 'scripts/Test-WorkflowPackageStatus.ps1')
+    }
+    'AgentInstructions' {
+        Invoke-AiRepoWorkflowScript -RelativePath 'scripts/Invoke-AgentInstructions.ps1' -ArgumentList @('-RepoRoot', $script:RepoRoot)
     }
     default {
         throw "Unsupported command: $Command"

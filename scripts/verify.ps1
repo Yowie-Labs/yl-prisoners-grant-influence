@@ -21,6 +21,11 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+if ([Environment]::GetEnvironmentVariable('AI_REPO_WORKFLOW_SNAPSHOT_ACTIVE') -eq '1') {
+    Write-Host 'Verification skipped during snapshot creation. Pre-push Verify remains the gate.' -ForegroundColor DarkGray
+    return
+}
+
 if ([string]::IsNullOrWhiteSpace($RepoRoot)) {
     $RepoRoot = Split-Path -Path $PSScriptRoot -Parent
 }

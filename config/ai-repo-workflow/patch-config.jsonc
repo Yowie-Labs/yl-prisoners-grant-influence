@@ -4,7 +4,6 @@
   "moveAppliedPatch": true,
   "moveFailedPatch": true,
   "createWorkflowDirectories": true,
-  "runPatchAfterScript": true,
   "snapshotAfterPatch": true,
   "snapshotAfterPatchAfterFailure": true,
   "includeCurrentPatchRunDiagnostics": true,
@@ -20,12 +19,25 @@
     "patchRunLogDir": "<RuntimeRoot>/logs/patch-runs"
   },
   "workspacePatchContract": {
-    "defaultPatchMode": "workspace-bundle",
-    "supportsMultiRepoPatchBundle": true,
-    "patchRule": "single-workspace-bundle-preferred",
-    "applyFrom": "workspace-root",
+    "defaultPatchMode": "single-repo",
+    "supportsMultiRepoPatchBundle": false,
+    "patchRule": "one-zip-per-target-repo",
+    "applyFrom": "repo-root",
     "routeBy": "patchNamePrefix"
   },
   "extends": "../ai-repo-workflow.local.jsonc",
-  "moveAppliedWithFailuresPatch": true
+  "moveAppliedWithFailuresPatch": true,
+  "workstreamRouting": {
+    "enabled": false,
+    "activeDirectory": "docs/work/active",
+    "requirePatchMetadata": true
+  }
 }
+
+
+
+
+
+
+
+

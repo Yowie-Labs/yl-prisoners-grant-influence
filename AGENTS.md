@@ -29,29 +29,50 @@ Visibility: `PUBLIC_GITHUB`
 
 ## Source of truth
 
-Treat a supplied snapshot as canonical; otherwise use the current checkout. Do not substitute remembered code, another repository, or workspace shadow copies.
+Treat a supplied snapshot as canonical; otherwise use the current checkout. Never substitute remembered or shadow copies.
 
 ## Work mode
 
-Default to normal approval mode. Before editing or packaging, state the exact approved target, exact files, non-goals, ambiguities, and verification plan, then wait for approval unless fast patch mode was explicitly requested.
+Default to normal approval mode. Before edits/packages, state target/files, non-goals, ambiguities, and verification; wait unless fast patch mode was requested. Stop on material conflicts.
 
-Implement only approved behavior. Do not add architecture, cleanup, compatibility work, or unrelated changes. Stop and report a material conflict between the request, specifications, plans, and code.
+## Example hygiene
+
+In public repos, examples/tests/docs use neutral fictional identifiers and placeholder paths; never copy consumer names, organizations, usernames, or machine paths.
+
+## Workstream identity
+
+Every patch has a workstream ID/purpose, but ordinary work does not require an active-work record or lease. Continue an established ID when appropriate; otherwise create a descriptive task ID.
+
+Read active reservations before editing. Pre-lease only expensive/high-collision work: always for coordinated multi-repo/shared-contract/broad migration work; otherwise when at least two apply—>6 files, >2 subsystems, nearby active work, expensive verification, costly rebase. State `Pre-lease: yes/no` and why. If yes, stop after the approved plan, produce one control-only reservation patch, and wait for successful apply before editing; otherwise implement normally. Control apply skips product verification/snapshots.
+
+Before using diagnostics/snapshots, compare embedded `workstreamId` with the task; route mismatches to the owning workstream.
 
 ## Repository work
 
 Inspect only task-relevant artifacts. Reference-mode repositories use the deployed ai-repo-workflow package; do not vendor or modify `tools/ai-repo-workflow` implementation files in the target repository.
 
-Run `pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify.ps1` and never claim verification passed without evidence. After a failure, inspect current-run diagnostics under `artifacts/diagnostics/latest/` before asking for copied terminal output. `Start-Transcript` is not sufficient evidence for native tools; external commands must use `scripts/Invoke-RepoDiagnosticCommand.ps1` or another explicit stdout/stderr capture path.
+Run `pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify.ps1` when requested or as the pre-push gate; never claim success without evidence. Patch/snapshot operations do not run Verify. After failures inspect `artifacts/diagnostics/latest/`. External commands must capture stdout/stderr; `Start-Transcript` alone is insufficient.
 
-## C# source layout
+## Agent instruction profiles
 
-Put each top-level class, record, struct, interface, enum, and delegate in its own file named after the type. Partial files may use `TypeName.Purpose.cs`. New types always receive their own files. A migration allowance may temporarily grandfather existing violations; do not add declarations to those files or perform unrelated broad extraction.
+Language/client/team profiles render in this `AGENTS.md`. Manage with `./repo-tools.ps1 -Command AgentInstructions`; text outside managed blocks is repository-owned.
 
 ## Patch and snapshot workflow
 
-When this repository belongs to a configured workspace, run patch and snapshot operations from the workspace root through `repo-tools.ps1`. A workspace snapshot may contain authoritative child snapshots under `projects/<project-name>/`; inspect them before requesting separate files.
+Configured workspaces run patch/snapshot operations from the workspace root. Multi-repo work uses one `WorkspacePatchBundle` with `manifest.json` schema 1 and one routed child ZIP per target/workstream. Do not hand-author bundles; use `ValidateWorkspacePatchBundle` and `ValidatePatch`. Child snapshots use `projects/<project-name>/`.
 
-For multi-repository work, produce one workspace bundle containing `manifest.json` and one routed patch ZIP per target under `patches/`. Each inner ZIP uses the target's configured prefix and contains only full target-repository-relative changed paths, with no wrapper, workspace-relative, snapshot, temporary, or absolute paths. A focused single-repository patch remains allowed and is still applied from the workspace root.
+When `workstreamRouting.enabled`, per-path base state/hash is the optimistic concurrency authority. `docs/work/active/<workstream>.json` is optional and reserves paths only for deliberate pre-leases. Ordinary implementation needs no lease. Touched-path drift or another workstream's reservation rejects before writes; unrelated reservations do not block disjoint patches. Control patches stay separate from implementation.
 
-Report patch mode, targets, prefixes, changed files, apply command, verification, suggested commit message, and next step.
+Manual patch metadata uses root `.ai-repo-workflow-patch.json` schema 2. Root keys: `schemaVersion`, `workstreamId`, `workstreamPurpose`, `patchId`, `targetRepository`, optional `baseReference`, `files`; no extras. Follow `config/ai-repo-workflow/agent-workflow-summary.jsonc` → `patchMetadataContract`. `files[].baseState`: existing file=`file` + `baseSha256`; directory=`directory` + `baseSha256`; absent=`absent` without `baseSha256`. Never use `present`/`exists` or omit `baseState`. Name patches `<project>-patch-<workstream>-<patch-id>.zip`.
+
+Apply Patch never runs Verify. After writes it runs present `patch.after.ps1`, then `scripts/test.ps1`; bundles defer both until child writes finish. Incomplete apply skips the hook but still runs tests. ZIPs contain only target-relative changes plus metadata.
+
+Failure diagnostics identify the workstream and recovery. On stale state, use compact current target files first and say `Rebase this patch against the current files in the diagnostic.` Post-apply diagnostics include resolvable current files named by failure logs. Ask for a full snapshot only if insufficient. Report workstream, target/prefix, changed files, apply command, verification, commit message, next step.
 <!-- ai-repo-workflow:end -->
+
+<!-- ai-repo-workflow:conventions:start -->
+<!-- Generated from configured instruction profiles. Manage with ./repo-tools.ps1 -Command AgentInstructions. Do not edit this block directly. -->
+## C# conventions
+
+Keep one top-level type per file: class, record, struct, interface, enum, or delegate. Prefer `TypeName.cs`; a distinct single-type companion may use `TypeName.Purpose.cs`. Do not add declarations to grandfathered migration exceptions.
+<!-- ai-repo-workflow:conventions:end -->

@@ -173,9 +173,12 @@ function Show-RepoToolsManualCommands {
     Write-Host "pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify.ps1 -StrictConventions"
     Write-Host "pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\test.ps1"
     Write-Host "pwsh -NoProfile -ExecutionPolicy Bypass -File .\repo-tools.ps1 -Command PatchWatcher"
+    Write-Host 'pwsh -NoProfile -ExecutionPolicy Bypass -File .\repo-tools.ps1 -Command ValidatePatch -PatchPath "<patch.zip>"'
     Write-Host "pwsh -NoProfile -ExecutionPolicy Bypass -File .\repo-tools.ps1 -Command ApplyPatch"
     Write-Host "pwsh -NoProfile -ExecutionPolicy Bypass -File .\repo-tools.ps1 -Command Snapshot"
     Write-Host "pwsh -NoProfile -ExecutionPolicy Bypass -File .\repo-tools.ps1 -Command AiPatchZip"
+    Write-Host '& .\repo-tools.ps1 -Command WorkspacePatchBundle -ChildPatchPath @("<child-one.zip>", "<child-two.zip>") -OutputPath "<workspace-bundle.zip>"'
+    Write-Host '& .\repo-tools.ps1 -Command ValidateWorkspacePatchBundle -PatchPath "<workspace-bundle.zip>"'
     Write-Host "pwsh -NoProfile -ExecutionPolicy Bypass -File .\repo-tools.ps1 -Command GitReviewPatch"
     Write-Host "pwsh -NoProfile -ExecutionPolicy Bypass -File .\repo-tools.ps1 -Command ReviewReset"
     Write-Host "pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\Test-RepoHygiene.ps1"
@@ -184,6 +187,7 @@ function Show-RepoToolsManualCommands {
     Write-Host "pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\Install-GitHooks.ps1 -ConfigureIdentityGuard"
     Write-Host "pwsh -NoProfile -ExecutionPolicy Bypass -File .\repo-tools.ps1 -Command Update"
     Write-Host "pwsh -NoProfile -ExecutionPolicy Bypass -File .\repo-tools.ps1 -Command Status"
+    Write-Host "pwsh -NoProfile -ExecutionPolicy Bypass -File .\repo-tools.ps1 -Command AgentInstructions"
     if ($script:IsWorkflowSourceRepo) {
         Write-Host "pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\Publish-WorkflowPackage.ps1"
         Write-Host "pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\Invoke-UpdateRegisteredWorkflowPackagesWizard.ps1"
@@ -196,6 +200,8 @@ function Show-RepoToolsMenu {
     Write-Host "AI Repo Workflow Tools"
     Write-Host ""
     Write-Host "AI review / approval workflow:"
+    Write-Host "  A. Manage agent instructions"
+    Write-Host "     Detect technologies, select reusable convention profiles, and preview the effective AGENTS.md conventions block."
     Write-Host "  R. Create review-reset packet"
     Write-Host "     Generate a review-only prompt, decision ledger, and approval checkpoint before patching."
     Write-Host ""
@@ -203,7 +209,7 @@ function Show-RepoToolsMenu {
     Write-Host "  1. Start patch watcher"
     Write-Host "     Start watching the patch downloads folder so patches can be applied automatically."
     Write-Host "  2. Apply patch"
-    Write-Host "     Apply a patch zip from the configured downloads folder or explicit path."
+    Write-Host "     Choose a recent matching patch, with workstream metadata shown automatically, or enter an exact path."
     Write-Host "  3. Create snapshot / review archive"
     Write-Host "     Create a compact snapshot/review zip for ChatGPT or code review."
     Write-Host "  4. Create AI patch zip"
@@ -279,6 +285,9 @@ while ($true) {
     $choice = Read-Host "Choose an option"
 
     switch ($choice) {
+        { $_ -match '^(a|A)$' } {
+            & (Join-Path -Path $script:RepoRootFull -ChildPath "repo-tools.ps1") -Command AgentInstructions
+        }
         { $_ -match '^(r|R)$' } {
             if ($script:IsWorkflowSourceRepo) {
                 Invoke-RepoToolsScript -Label "Create review-reset packet" -RelativePaths @("tools/ai-repo-workflow/scripts/New-AiReviewPacket.ps1") -Arguments @("-RepoRoot", $script:RepoRootFull)
@@ -299,25 +308,18 @@ while ($true) {
             }
         }
         "2" {
-            $patchPath = Read-Host "Patch path (blank = configured downloads folder)"
             if ($script:IsWorkflowSourceRepo) {
-                $arguments = @("-ConfigPath", (Join-Path -Path $script:RepoRootFull -ChildPath "config/patch-config.jsonc"))
-                if (-not [string]::IsNullOrWhiteSpace($patchPath)) {
-                    $arguments += @("-PatchPath", $patchPath)
-                }
                 Invoke-RepoToolsScript -Label "Apply patch" -RelativePaths @(
                     "tools/ai-repo-workflow/scripts/Invoke-RepoPatch.ps1",
                     "tools/ai-repo-workflow/scripts/patch.ps1"
-                ) -Arguments $arguments
+                ) -Arguments @(
+                    "-ConfigPath",
+                    (Join-Path -Path $script:RepoRootFull -ChildPath "config/patch-config.jsonc"),
+                    "-Interactive"
+                )
             }
             else {
-                $repoTools = Join-Path -Path $script:RepoRootFull -ChildPath "repo-tools.ps1"
-                if (-not [string]::IsNullOrWhiteSpace($patchPath)) {
-                    & $repoTools -Command ApplyPatch -PatchPath $patchPath
-                }
-                else {
-                    & $repoTools -Command ApplyPatch
-                }
+                & (Join-Path -Path $script:RepoRootFull -ChildPath "repo-tools.ps1") -Command ApplyPatch -Interactive
             }
         }
         "3" {

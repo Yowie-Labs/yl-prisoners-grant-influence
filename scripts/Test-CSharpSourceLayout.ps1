@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Checks that each C# source file contains one matching top-level named type.
 
@@ -212,7 +212,12 @@ function Test-CSharpDeclarationFileName {
     )
 
     if ($FileName -ieq "$($Declaration.Name).cs") { return $true }
-    if ($Declaration.IsPartial -and $FileName -imatch ('^' + [regex]::Escape($Declaration.Name) + '\.[^.]+(?:\.[^.]+)*\.cs$')) { return $true }
+
+    # A distinct single-type companion file may use TypeName.Purpose.cs. This is
+    # needed for legitimate same-simple-name generic/non-generic companions and
+    # for focused implementation slices without weakening the one-type-per-file rule.
+    if ($FileName -imatch ('^' + [regex]::Escape($Declaration.Name) + '\.[^.]+(?:\.[^.]+)*\.cs$')) { return $true }
+
     return $false
 }
 
