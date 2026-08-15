@@ -31,7 +31,7 @@ namespace YL.Prisoners.LordsGrantInfluence
         /// <summary>
         /// Initializes the model with the prisoner-policy calculator and custody provider it will use.
         /// </summary>
-        /// <param name="calculator">Policy component that applies the 1/2/3 influence rule.</param>
+        /// <param name="calculator">Policy component that applies the configured highest-tier-only influence rule.</param>
         /// <param name="prisonerProvider">Component that finds unique lords held anywhere by the player clan.</param>
         public LordsGrantInfluenceClanPoliticsModel(
             IImprisonedLordInfluenceCalculator calculator,
@@ -84,21 +84,21 @@ namespace YL.Prisoners.LordsGrantInfluence
                 calculator.CalculateBreakdown(prisonerProvider.GetImprisonedLords(playerClan));
 
             AddInfluenceLine(
-                result,
+                ref result,
                 breakdown.LordInfluence,
                 breakdown.LordCount,
-                "{=YL_LGI_CapturedNobles}Captured nobles ({COUNT})",
+                "{=YL_LGI_CapturedLords}Captured lords ({COUNT})",
                 includeDescriptions);
 
             AddInfluenceLine(
-                result,
+                ref result,
                 breakdown.ClanLeaderInfluence,
                 breakdown.ClanLeaderCount,
                 "{=YL_LGI_CapturedClanLeaders}Captured clan leaders ({COUNT})",
                 includeDescriptions);
 
             AddInfluenceLine(
-                result,
+                ref result,
                 breakdown.KingdomRulerInfluence,
                 breakdown.KingdomRulerCount,
                 "{=YL_LGI_CapturedKingdomRulers}Captured kingdom rulers ({COUNT})",
@@ -160,18 +160,24 @@ namespace YL.Prisoners.LordsGrantInfluence
         /// <summary>
         /// Adds one non-zero prisoner category to Bannerlord's explained influence result.
         /// </summary>
-        /// <param name="result">The chained influence result being augmented.</param>
+        /// <param name="result">The chained influence result being augmented in place.</param>
         /// <param name="influence">Influence subtotal for the category.</param>
         /// <param name="count">Number of unique imprisoned lords in the category.</param>
         /// <param name="descriptionTemplate">Localized tooltip label containing a <c>{COUNT}</c> variable.</param>
         /// <param name="includeDescriptions">Whether Bannerlord requested explanation text.</param>
         /// <remarks>
         /// Categories with a zero count or zero subtotal are intentionally omitted. This keeps the native tooltip
-        /// concise: a player with two ordinary captured lords sees only "Captured nobles (2) +2" rather than two
-        /// additional zero-value rows for clan leaders and kingdom rulers.
+        /// concise: a player with two ordinary captured lords sees only one prisoner row rather than two additional
+        /// zero-value rows for clan leaders and kingdom rulers.
+        ///
+        /// <see cref="ExplainedNumber"/> is a value type. The <paramref name="result"/> parameter must therefore be
+        /// passed by <c>ref</c>. Passing it by value mutates only a copy of the numeric total. Because the copied value
+        /// can still share explanation backing data, that bug can produce a deceptive tooltip that shows prisoner
+        /// rows while Bannerlord's actual Expected Change omits their influence. Keeping the mutation by-reference is
+        /// required for the UI explanation and the gameplay number to remain identical.
         /// </remarks>
         private static void AddInfluenceLine(
-            ExplainedNumber result,
+            ref ExplainedNumber result,
             float influence,
             int count,
             string descriptionTemplate,

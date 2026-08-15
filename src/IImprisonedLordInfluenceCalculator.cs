@@ -8,8 +8,8 @@ namespace YL.Prisoners.LordsGrantInfluence
     /// </summary>
     /// <remarks>
     /// The calculator deliberately knows nothing about where prisoners are stored. Separating custody discovery
-    /// from the 1/2/3 influence policy keeps the gameplay rule easy to test and prevents UI integration concerns
-    /// from leaking into the rule itself.
+    /// from the configurable influence policy keeps the gameplay rule easy to inspect and prevents UI integration
+    /// concerns from leaking into the rule itself.
     /// </remarks>
     public interface IImprisonedLordInfluenceCalculator
     {
@@ -27,7 +27,7 @@ namespace YL.Prisoners.LordsGrantInfluence
         /// Calculates only the combined daily influence for a set of imprisoned heroes.
         /// </summary>
         /// <param name="imprisonedHeroes">Heroes whose prisoner influence should be evaluated.</param>
-        /// <returns>The sum of the three prisoner-tier subtotals.</returns>
+        /// <returns>The sum of the three configured prisoner-tier subtotals.</returns>
         /// <remarks>
         /// This convenience method exists for callers that only need the number. It delegates to
         /// <see cref="CalculateBreakdown"/> so there is still only one source of truth for the policy.
@@ -35,12 +35,12 @@ namespace YL.Prisoners.LordsGrantInfluence
         float CalculateDailyInfluence(IEnumerable<Hero> imprisonedHeroes);
 
         /// <summary>
-        /// Returns the daily influence value for one hero according to the module's highest-tier-only rule.
+        /// Returns the configured daily influence value for one hero according to the highest-tier-only rule.
         /// </summary>
         /// <param name="imprisonedHero">The hero to classify.</param>
         /// <returns>
-        /// Three for a kingdom ruler, two for another clan leader, one for another lord, or zero for a hero who
-        /// is not a lord.
+        /// The configured kingdom-ruler value for a ruler, the configured clan-leader value for another clan
+        /// leader, the configured ordinary-lord value for another lord, or zero for a hero who is not a lord.
         /// </returns>
         float GetDailyInfluence(Hero imprisonedHero);
     }

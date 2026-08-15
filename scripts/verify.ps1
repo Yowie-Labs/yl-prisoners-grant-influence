@@ -101,7 +101,7 @@ try {
     & (Join-Path -Path $repoRootFull -ChildPath 'scripts/Test-CSharpSourceLayout.ps1') -RepoRoot $repoRootFull
 
     $testScriptPath = Join-Path -Path $repoRootFull -ChildPath 'scripts/test.ps1'
-    & $testScriptPath -RepoRoot $repoRootFull
+    & $testScriptPath -RepoRoot $repoRootFull -Profile 'full'
 
     Write-Host 'Repository verification passed.'
     Write-Host "Repo root: $repoRootFull"

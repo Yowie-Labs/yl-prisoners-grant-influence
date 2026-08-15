@@ -12,11 +12,11 @@ Naming rules:
 Product rules:
 
 - Depend on the dedicated `BannerCord` module and compile against `BannerCord.Core`.
-- Keep the 1/2/3 prisoner-influence policy in this repository.
+- Keep the prisoner-influence policy and its player-editable XML configuration in this repository.
 - Do not add the behavior to `Bannercord.Core` or `BannerCord.Module`.
 - Count each unique imprisoned Hero lord held by the player clan once per day.
 - Include the main party, every player-clan mobile party, and every player-clan dungeon.
-- Award 1 influence for a lord, 2 for a clan leader, and 3 for a kingdom ruler; only the highest tier applies.
+- Ship defaults of 0.5 influence for a lord, 1.0 for a clan leader, and 1.5 for a kingdom ruler; load player overrides from `module/config/LordsGrantInfluence.xml`; only the highest tier applies.
 - Do not add war, faction, peace, alive/dead, or hostility checks.
 - Keep the behavior stateless; do not add custom save data.
 

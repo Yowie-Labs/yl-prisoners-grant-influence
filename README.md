@@ -2,15 +2,29 @@
 
 A small optional Bannerlord module that makes continued custody of captured lords politically useful.
 
-Each daily player-clan tick awards:
+The shipped daily defaults are:
 
-- ordinary lord: **1 influence**;
-- clan leader: **2 influence**;
-- kingdom ruler: **3 influence**.
+- ordinary lord: **0.5 influence**;
+- clan leader: **1.0 influence**;
+- kingdom ruler: **1.5 influence**.
 
 Only the highest tier applies. Each Hero is counted once across the main party, player-clan parties, and player-clan dungeons.
 
-The module is stateless. Removing or disabling it stops future awards and leaves no custom save data.
+The same native `ClanPoliticsModel` calculation drives both Bannerlord's real daily influence change and the influence tooltip. The tooltip therefore shows separate non-zero rows such as `Captured lords (4) +2` or `Captured clan leaders (2) +2` while the numeric `Expected Change` includes those same values.
+
+## Player configuration
+
+The three per-prisoner values are intentionally player-editable. Change:
+
+```text
+module/config/LordsGrantInfluence.xml
+```
+
+The shipped file contains comments explaining every setting. Values are daily influence per unique prisoner, use a period as the decimal separator, and must be zero or greater. Setting a value to `0` disables influence from that prisoner tier.
+
+The XML is loaded when the campaign session starts, so restart/reload after editing it. If the file is missing or malformed, the module displays a warning and falls back to the shipped `0.5 / 1.0 / 1.5` defaults rather than failing the campaign.
+
+The module is stateless. Removing or disabling it stops future awards and leaves no custom save data; the XML settings are not serialized into Bannerlord saves.
 
 ## Dependencies
 
