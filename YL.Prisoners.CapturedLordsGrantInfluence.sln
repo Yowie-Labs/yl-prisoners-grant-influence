@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.7.11819.209
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YL.Prisoners.LordsGrantInfluence", "src\YL.Prisoners.LordsGrantInfluence.csproj", "{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YL.Prisoners.CapturedLordsGrantInfluence", "src\YL.Prisoners.CapturedLordsGrantInfluence.csproj", "{CFB0CDEF-5DC9-4FE9-AA36-C92228D8D298}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

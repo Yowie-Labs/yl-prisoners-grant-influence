@@ -4,10 +4,10 @@ using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
 
-namespace YL.Prisoners.LordsGrantInfluence
+namespace YL.Prisoners.CapturedLordsGrantInfluence
 {
     /// <summary>
-    /// Bannerlord submodule entry point for YL Prisoners: Lords Grant Influence.
+    /// Bannerlord submodule entry point for YL Prisoners: Captured Lords Grant Influence.
     /// </summary>
     /// <remarks>
     /// The submodule performs only composition. It ensures BannerCord is loaded, constructs the small policy and
@@ -15,7 +15,7 @@ namespace YL.Prisoners.LordsGrantInfluence
     /// campaign behavior. Gameplay logic intentionally remains outside the entry point so each responsibility is
     /// understandable and testable on its own.
     /// </remarks>
-    public sealed class LordsGrantInfluenceSubModule : MBSubModuleBase
+    public sealed class CapturedLordsGrantInfluenceSubModule : MBSubModuleBase
     {
         /// <summary>
         /// Ensures the shared BannerCord runtime assembly is available when this optional module loads.
@@ -44,12 +44,12 @@ namespace YL.Prisoners.LordsGrantInfluence
             if (game.GameType is Campaign && gameStarter is CampaignGameStarter campaignGameStarter)
             {
                 IImprisonedLordInfluenceCalculator calculator = new ImprisonedLordInfluenceCalculator();
-                PlayerClanImprisonedLordProvider prisonerProvider = new PlayerClanImprisonedLordProvider();
+                ClanImprisonedLordProvider prisonerProvider = new ClanImprisonedLordProvider();
 
                 campaignGameStarter.AddModel<ClanPoliticsModel>(
-                    new LordsGrantInfluenceClanPoliticsModel(calculator, prisonerProvider));
+                    new CapturedLordsGrantInfluenceClanPoliticsModel(calculator, prisonerProvider));
 
-                campaignGameStarter.AddBehavior(new LordsGrantInfluenceCampaignBehavior());
+                campaignGameStarter.AddBehavior(new CapturedLordsGrantInfluenceCampaignBehavior());
             }
         }
     }

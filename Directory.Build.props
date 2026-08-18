@@ -10,8 +10,8 @@
     <RestoreAdditionalProjectSources Condition="Exists('$(BannerCordPackageSource)')">$(RestoreAdditionalProjectSources);$(BannerCordPackageSource)</RestoreAdditionalProjectSources>
   </PropertyGroup>
 
-  <Target Name="EnsureBannerlordGameRootForLordsGrantInfluence" BeforeTargets="ResolveReferences">
+  <Target Name="EnsureBannerlordGameRootForCapturedLordsGrantInfluence" BeforeTargets="ResolveReferences">
     <Error Condition="'$(BannerlordGameRoot)' == '' or !Exists('$(BannerlordGameRoot)\bin\Win64_Shipping_Client\TaleWorlds.CampaignSystem.dll')"
-           Text="YL.Prisoners.LordsGrantInfluence could not resolve BannerlordGameRoot. Configure Skaldflow.Workspace\Skaldflow.Workspace.local.props or add Directory.Build.props.user." />
+           Text="YL.Prisoners.CapturedLordsGrantInfluence could not resolve BannerlordGameRoot. Configure Skaldflow.Workspace\Skaldflow.Workspace.local.props or add Directory.Build.props.user." />
   </Target>
 </Project>

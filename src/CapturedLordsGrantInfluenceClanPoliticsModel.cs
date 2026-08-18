@@ -5,7 +5,7 @@ using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.Election;
 using TaleWorlds.Localization;
 
-namespace YL.Prisoners.LordsGrantInfluence
+namespace YL.Prisoners.CapturedLordsGrantInfluence
 {
     /// <summary>
     /// Adds captured-lord influence to Bannerlord's normal <see cref="ClanPoliticsModel"/> calculation.
@@ -22,20 +22,20 @@ namespace YL.Prisoners.LordsGrantInfluence
     /// One model calculation therefore drives the gameplay result and the UI explanation, eliminating the possibility
     /// that the tooltip and the awarded amount disagree.
     /// </remarks>
-    public sealed class LordsGrantInfluenceClanPoliticsModel : ClanPoliticsModel
+    public sealed class CapturedLordsGrantInfluenceClanPoliticsModel : ClanPoliticsModel
     {
         private readonly IImprisonedLordInfluenceCalculator calculator;
-        private readonly PlayerClanImprisonedLordProvider prisonerProvider;
+        private readonly ClanImprisonedLordProvider prisonerProvider;
         private static long invocationCount;
 
         /// <summary>
         /// Initializes the model with the prisoner-policy calculator and custody provider it will use.
         /// </summary>
         /// <param name="calculator">Policy component that applies the configured highest-tier-only influence rule.</param>
-        /// <param name="prisonerProvider">Component that finds unique lords held anywhere by the player clan.</param>
-        public LordsGrantInfluenceClanPoliticsModel(
+        /// <param name="prisonerProvider">Component that finds unique lords held anywhere by the clan Bannerlord is evaluating.</param>
+        public CapturedLordsGrantInfluenceClanPoliticsModel(
             IImprisonedLordInfluenceCalculator calculator,
-            PlayerClanImprisonedLordProvider prisonerProvider)
+            ClanImprisonedLordProvider prisonerProvider)
         {
             this.calculator = calculator ?? throw new ArgumentNullException(nameof(calculator));
             this.prisonerProvider = prisonerProvider ?? throw new ArgumentNullException(nameof(prisonerProvider));
@@ -55,7 +55,7 @@ namespace YL.Prisoners.LordsGrantInfluence
         internal static long InvocationCount => Interlocked.Read(ref invocationCount);
 
         /// <summary>
-        /// Calculates the normal clan influence change and then adds the player's captured-lord contribution.
+        /// Calculates the normal clan influence change and then adds the configured captured-lord contribution.
         /// </summary>
         /// <param name="clan">Clan whose influence change Bannerlord is evaluating.</param>
         /// <param name="includeDescriptions">
@@ -63,8 +63,8 @@ namespace YL.Prisoners.LordsGrantInfluence
         /// numeric result is required for simulation.
         /// </param>
         /// <returns>
-        /// The chained base calculation plus this module's prisoner influence for the player clan. Other clans are
-        /// returned unchanged.
+        /// The chained base calculation plus this module's prisoner influence for the evaluated clan. Non-player
+        /// clans are returned unchanged only when the XML setting <c>ApplyToAiClans</c> is disabled.
         /// </returns>
         public override ExplainedNumber CalculateInfluenceChange(Clan clan, bool includeDescriptions)
         {
@@ -74,14 +74,15 @@ namespace YL.Prisoners.LordsGrantInfluence
             // chain; constructing a fresh ExplainedNumber here would erase every contribution below this model.
             ExplainedNumber result = BaseModel.CalculateInfluenceChange(clan, includeDescriptions);
 
-            Clan playerClan = Clan.PlayerClan;
-            if (playerClan == null || clan != playerClan)
+            Clan? playerClan = Clan.PlayerClan;
+            bool isPlayerClan = playerClan != null && clan == playerClan;
+            if (!isPlayerClan && !calculator.ApplyToAiClans)
             {
                 return result;
             }
 
             ImprisonedLordInfluenceBreakdown breakdown =
-                calculator.CalculateBreakdown(prisonerProvider.GetImprisonedLords(playerClan));
+                calculator.CalculateBreakdown(prisonerProvider.GetImprisonedLords(clan));
 
             AddInfluenceLine(
                 ref result,

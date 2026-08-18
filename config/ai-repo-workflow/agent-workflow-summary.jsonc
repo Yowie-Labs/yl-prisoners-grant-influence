@@ -4,7 +4,7 @@
   // Machine-readable summary for local AI coding agents.
   "schemaVersion": 1,
   "workflowScaffoldVersion": 2,
-  "repoName": "YL.Prisoners.LordsGrantInfluence",
+  "repoName": "YL.Prisoners.CapturedLordsGrantInfluence",
   "workflowPackagePath": "<PackageRoot>",
   "defaultInstallMode": "reference",
   "targetReposVendorImplementationFilesByDefault": false,
@@ -51,7 +51,19 @@
   "patchZipRules": {
     "pathsAreRepoRelative": true,
     "outerWrapperFolderAllowed": false,
-    "deleteFilesByDefault": false
+    "deleteFilesByDefault": false,
+    "deleteManifest": {
+      "path": "delete.txt",
+      "optional": true,
+      "format": "one repo-relative file or directory path per non-empty non-comment line",
+      "commentPrefix": "#",
+      "directoriesAllowed": true,
+      "packagingOnly": true,
+      "deletedPathsAreNotPayloadFiles": true,
+      "samePathMayBeCopiedAndDeleted": false,
+      "metadataFilesIncludeDeletedPaths": true,
+      "metadataFilesMustExactlyMatchCopiedAndDeletedPaths": true
+    }
   },
   "patchMetadataContract": {
     "manifestPath": ".ai-repo-workflow-patch.json",
@@ -232,7 +244,7 @@
       "source/docs/config/scripts",
       "agent instructions",
       "current patch-run diagnostics",
-      "workspace child snapshots when workspace.enabled is true"
+      "flat workspace/project snapshot content when workspace.enabled is true; custom child producers may appear as marked legacy nested zips"
     ],
     "exclude": [
       "old snapshots",

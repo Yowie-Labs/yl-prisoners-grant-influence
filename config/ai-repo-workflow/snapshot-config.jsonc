@@ -3,9 +3,9 @@
   // Package runtime defaults update independently; prefer additionalIncludeGlobs/additionalExcludeGlobs to extend them.
   // Explicit includeGlobs/excludeGlobs, when present, intentionally replace package defaults.
 "schemaVersion": 1,
-  "repoName": "YL.Prisoners.LordsGrantInfluence",
-  "projectName": "YL.Prisoners.LordsGrantInfluence",
-  "snapshotNamePrefix": "YL.Prisoners.LordsGrantInfluence-snapshot",
+  "repoName": "YL.Prisoners.CapturedLordsGrantInfluence",
+  "projectName": "YL.Prisoners.CapturedLordsGrantInfluence",
+  "snapshotNamePrefix": "YL.Prisoners.CapturedLordsGrantInfluence-snapshot",
   "includeWorkflowPackage": false,
   "includeMedia": false,
   "includeBinaryLogs": false,

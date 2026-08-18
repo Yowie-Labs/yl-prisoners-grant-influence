@@ -6,14 +6,14 @@ using System.Xml;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Library;
 
-namespace YL.Prisoners.LordsGrantInfluence
+namespace YL.Prisoners.CapturedLordsGrantInfluence
 {
     /// <summary>
     /// Applies the module's configurable prisoner-influence policy.
     /// </summary>
     /// <remarks>
     /// The shipped defaults grant 0.5 influence per day for an ordinary lord, 1.0 for a clan leader, and 1.5 for
-    /// a kingdom ruler. Players can change those values in <c>module/config/LordsGrantInfluence.xml</c>. Only the
+    /// a kingdom ruler. Players can change those values in <c>module/config/CapturedLordsGrantInfluence.xml</c>. Only the
     /// highest matching tier applies. The calculator does not care about war state, faction hostility, whether the
     /// hero is alive, or how the prisoner was acquired; those exclusions are deliberate product rules rather than
     /// missing checks.
@@ -33,7 +33,10 @@ namespace YL.Prisoners.LordsGrantInfluence
         /// <summary>Default daily influence granted by an imprisoned kingdom ruler.</summary>
         public const float DefaultKingdomRulerInfluencePerDay = 1.5f;
 
-        private const string SettingsFileName = "LordsGrantInfluence.xml";
+        /// <summary>Default policy: NPC clans receive the same prisoner influence as the player clan.</summary>
+        public const bool DefaultApplyToAiClans = true;
+
+        private const string SettingsFileName = "CapturedLordsGrantInfluence.xml";
 
         /// <summary>
         /// Initializes the calculator from the player-editable module XML, falling back to shipped defaults if the
@@ -44,6 +47,7 @@ namespace YL.Prisoners.LordsGrantInfluence
             LordInfluencePerDay = DefaultLordInfluencePerDay;
             ClanLeaderInfluencePerDay = DefaultClanLeaderInfluencePerDay;
             KingdomRulerInfluencePerDay = DefaultKingdomRulerInfluencePerDay;
+            ApplyToAiClans = DefaultApplyToAiClans;
 
             TryLoadConfiguredValues();
         }
@@ -56,6 +60,11 @@ namespace YL.Prisoners.LordsGrantInfluence
 
         /// <summary>Gets the configured daily influence granted by an imprisoned kingdom ruler.</summary>
         public float KingdomRulerInfluencePerDay { get; private set; }
+
+        /// <summary>
+        /// Gets whether non-player clans receive the same captured-lord influence contribution.
+        /// </summary>
+        public bool ApplyToAiClans { get; private set; }
 
         /// <inheritdoc />
         public ImprisonedLordInfluenceBreakdown CalculateBreakdown(IEnumerable<Hero> imprisonedHeroes)
@@ -162,15 +171,16 @@ namespace YL.Prisoners.LordsGrantInfluence
                 document.Load(settingsPath);
 
                 XmlElement? root = document.DocumentElement;
-                if (root == null || root.Name != "LordsGrantInfluenceSettings")
+                if (root == null || root.Name != "CapturedLordsGrantInfluenceSettings")
                 {
                     throw new InvalidDataException(
-                        "Expected root element <LordsGrantInfluenceSettings>.");
+                        "Expected root element <CapturedLordsGrantInfluenceSettings>.");
                 }
 
                 LordInfluencePerDay = ReadInfluenceValue(root, "OrdinaryLord");
                 ClanLeaderInfluencePerDay = ReadInfluenceValue(root, "ClanLeader");
                 KingdomRulerInfluencePerDay = ReadInfluenceValue(root, "KingdomRuler");
+                ApplyToAiClans = ReadBooleanAttribute(root, "ApplyToAiClans", DefaultApplyToAiClans);
             }
             catch (Exception exception) when (
                 exception is IOException ||
@@ -181,12 +191,13 @@ namespace YL.Prisoners.LordsGrantInfluence
                 LordInfluencePerDay = DefaultLordInfluencePerDay;
                 ClanLeaderInfluencePerDay = DefaultClanLeaderInfluencePerDay;
                 KingdomRulerInfluencePerDay = DefaultKingdomRulerInfluencePerDay;
+                ApplyToAiClans = DefaultApplyToAiClans;
 
                 string message =
-                    "YL Prisoners: Lords Grant Influence could not load its XML settings and is using defaults " +
+                    "YL Prisoners: Captured Lords Grant Influence could not load its XML settings and is using defaults " +
                     $"({DefaultLordInfluencePerDay.ToString(CultureInfo.InvariantCulture)}/" +
                     $"{DefaultClanLeaderInfluencePerDay.ToString(CultureInfo.InvariantCulture)}/" +
-                    $"{DefaultKingdomRulerInfluencePerDay.ToString(CultureInfo.InvariantCulture)}). " +
+                    $"{DefaultKingdomRulerInfluencePerDay.ToString(CultureInfo.InvariantCulture)}; AI parity enabled). " +
                     $"File: {settingsPath}. {exception.Message}";
 
                 InformationManager.DisplayMessage(new InformationMessage(message));
@@ -220,6 +231,31 @@ namespace YL.Prisoners.LordsGrantInfluence
             {
                 throw new InvalidDataException(
                     $"<{elementName} value=\"{rawValue}\"> must contain a finite number greater than or equal to zero.");
+            }
+
+            return parsedValue;
+        }
+
+        /// <summary>
+        /// Reads an optional boolean policy switch from the settings root.
+        /// </summary>
+        /// <remarks>
+        /// The attribute is optional for backwards compatibility with settings files created before AI parity was
+        /// introduced. Missing values therefore use the shipped default rather than invalidating the player's
+        /// existing influence-value customizations.
+        /// </remarks>
+        private static bool ReadBooleanAttribute(XmlElement root, string attributeName, bool defaultValue)
+        {
+            string rawValue = root.GetAttribute(attributeName);
+            if (string.IsNullOrWhiteSpace(rawValue))
+            {
+                return defaultValue;
+            }
+
+            if (!bool.TryParse(rawValue, out bool parsedValue))
+            {
+                throw new InvalidDataException(
+                    $"Attribute {attributeName}=\"{rawValue}\" must be either true or false.");
             }
 
             return parsedValue;

@@ -2,14 +2,14 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.Library;
 
-namespace YL.Prisoners.LordsGrantInfluence
+namespace YL.Prisoners.CapturedLordsGrantInfluence
 {
     /// <summary>
     /// Performs a one-time runtime check that the active politics-model chain still reaches this module.
     /// </summary>
     /// <remarks>
     /// This behavior does not award influence. The actual gameplay rule lives entirely in
-    /// <see cref="LordsGrantInfluenceClanPoliticsModel"/> so Bannerlord's native daily influence tick and native
+    /// <see cref="CapturedLordsGrantInfluenceClanPoliticsModel"/> so Bannerlord's native daily influence tick and native
     /// influence tooltip share one calculation.
     ///
     /// Bannerlord allows multiple mods to extend a game model by calling their inherited <c>BaseModel</c>. A mod
@@ -19,7 +19,7 @@ namespace YL.Prisoners.LordsGrantInfluence
     /// did not, the player receives one diagnostic message naming the active model so they know why the bonus is not
     /// functioning.
     /// </remarks>
-    public sealed class LordsGrantInfluenceCampaignBehavior : CampaignBehaviorBase
+    public sealed class CapturedLordsGrantInfluenceCampaignBehavior : CampaignBehaviorBase
     {
         private bool compatibilityCheckCompleted;
 
@@ -67,14 +67,14 @@ namespace YL.Prisoners.LordsGrantInfluence
                 return;
             }
 
-            long invocationCountBefore = LordsGrantInfluenceClanPoliticsModel.InvocationCount;
+            long invocationCountBefore = CapturedLordsGrantInfluenceClanPoliticsModel.InvocationCount;
 
             // This call is intentionally read-only. CalculateInfluenceChange computes an ExplainedNumber; it does
             // not itself grant influence. Calling the final active model synchronously lets us observe whether that
-            // model delegates through BaseModel far enough to reach LordsGrantInfluenceClanPoliticsModel.
+            // model delegates through BaseModel far enough to reach CapturedLordsGrantInfluenceClanPoliticsModel.
             activeModel.CalculateInfluenceChange(playerClan, false);
 
-            long invocationCountAfter = LordsGrantInfluenceClanPoliticsModel.InvocationCount;
+            long invocationCountAfter = CapturedLordsGrantInfluenceClanPoliticsModel.InvocationCount;
             compatibilityCheckCompleted = true;
 
             if (invocationCountAfter != invocationCountBefore)
@@ -84,7 +84,7 @@ namespace YL.Prisoners.LordsGrantInfluence
 
             string activeModelName = activeModel.GetType().FullName ?? activeModel.GetType().Name;
             string message =
-                "YL Prisoners: Lords Grant Influence compatibility warning: the active ClanPoliticsModel (" +
+                "YL Prisoners: Captured Lords Grant Influence compatibility warning: the active ClanPoliticsModel (" +
                 activeModelName +
                 ") did not call the existing Bannerlord model chain. Captured-lord influence bonuses will not " +
                 "work while that model is active. Check other mods that replace clan or influence calculations.";

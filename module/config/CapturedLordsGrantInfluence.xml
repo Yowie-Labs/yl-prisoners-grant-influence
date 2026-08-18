@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Player-editable settings for YL Prisoners: Lords Grant Influence.
+  Player-editable settings for YL Prisoners: Captured Lords Grant Influence.
 
   These values are read when a campaign session starts. Restart/reload the game after editing this file.
   Values are daily influence per unique prisoner. Use a period as the decimal separator.
@@ -9,7 +9,13 @@
   Prisoner tiers are mutually exclusive: a kingdom ruler uses only KingdomRuler, a non-ruler clan leader uses
   only ClanLeader, and every other captured lord uses OrdinaryLord. A ruler does not also receive the lower tiers.
 -->
-<LordsGrantInfluenceSettings>
+<CapturedLordsGrantInfluenceSettings ApplyToAiClans="true">
+  <!--
+    ApplyToAiClans:
+      true  = NPC clans receive the same captured-lord influence policy as the player clan.
+      false = only the player clan receives captured-lord influence.
+    Default: true, so the mechanic does not give the player a private advantage over AI clans.
+  -->
   <InfluencePerDay>
     <!-- Default: 0.5 influence per ordinary captured lord per day. -->
     <OrdinaryLord value="0.5" />
@@ -20,4 +26,4 @@
     <!-- Default: 1.5 influence per captured kingdom ruler per day. -->
     <KingdomRuler value="1.5" />
   </InfluencePerDay>
-</LordsGrantInfluenceSettings>
+</CapturedLordsGrantInfluenceSettings>

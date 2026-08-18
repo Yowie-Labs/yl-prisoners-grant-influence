@@ -1,7 +1,7 @@
-namespace YL.Prisoners.LordsGrantInfluence
+namespace YL.Prisoners.CapturedLordsGrantInfluence
 {
     /// <summary>
-    /// Describes one complete daily prisoner-influence calculation for the player clan.
+    /// Describes one complete daily prisoner-influence calculation for one evaluated clan.
     /// </summary>
     /// <remarks>
     /// Bannerlord's influence model ultimately needs a single numeric result, but the user interface is much

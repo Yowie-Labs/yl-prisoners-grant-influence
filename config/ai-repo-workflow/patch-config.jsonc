@@ -1,6 +1,6 @@
 {
-  "repoName": "YL.Prisoners.LordsGrantInfluence",
-  "patchNamePrefix": "YL.Prisoners.LordsGrantInfluence-",
+  "repoName": "YL.Prisoners.CapturedLordsGrantInfluence",
+  "patchNamePrefix": "YL.Prisoners.CapturedLordsGrantInfluence-",
   "moveAppliedPatch": true,
   "moveFailedPatch": true,
   "createWorkflowDirectories": true,

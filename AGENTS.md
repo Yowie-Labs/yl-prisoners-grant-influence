@@ -1,29 +1,29 @@
-# AGENTS.md - YL.Prisoners.LordsGrantInfluence
+# AGENTS.md - YL.Prisoners.CapturedLordsGrantInfluence
 
 This repository owns one optional Bannerlord gameplay mod. Installing and enabling this module enables the rule; BannerCord itself must remain policy-free.
 
 Naming rules:
 
-- Public mod title: `YL Prisoners: Lords Grant Influence`.
-- Repository, assembly, and root namespace: `YL.Prisoners.LordsGrantInfluence`.
-- Bannerlord module ID: `YLPrisonersLordsGrantInfluence`.
+- Public mod title: `YL Prisoners: Captured Lords Grant Influence`.
+- Repository, project, Bannerlord module ID, assembly, and root namespace: `YL.Prisoners.CapturedLordsGrantInfluence`.
 - Preserve the anonymous `YL <Vertical>: <Feature>` product convention for related mods.
 
 Product rules:
 
 - Depend on the dedicated `BannerCord` module and compile against `BannerCord.Core`.
-- Keep the prisoner-influence policy and its player-editable XML configuration in this repository.
+- Keep the captured-lord influence policy and its player-editable XML configuration in this repository.
 - Do not add the behavior to `Bannercord.Core` or `BannerCord.Module`.
-- Count each unique imprisoned Hero lord held by the player clan once per day.
-- Include the main party, every player-clan mobile party, and every player-clan dungeon.
-- Ship defaults of 0.5 influence for a lord, 1.0 for a clan leader, and 1.5 for a kingdom ruler; load player overrides from `module/config/LordsGrantInfluence.xml`; only the highest tier applies.
+- Count each unique imprisoned Hero lord held by the clan being evaluated once per daily influence calculation.
+- Include the evaluated clan's native mobile-party and dungeon custody; include `MobileParty.MainParty` explicitly for the player clan.
+- Ship defaults of 0.5 influence for a lord, 1.0 for a clan leader, and 1.5 for a kingdom ruler; load player overrides from `module/config/CapturedLordsGrantInfluence.xml`; only the highest tier applies.
+- Apply the same rule to NPC clans by default. `ApplyToAiClans="false"` may disable AI participation without changing player behavior.
 - Do not add war, faction, peace, alive/dead, or hostility checks.
 - Keep the behavior stateless; do not add custom save data.
 
 <!-- ai-repo-workflow:start -->
-# AGENTS.md - YL.Prisoners.LordsGrantInfluence
+# AGENTS.md - YL.Prisoners.CapturedLordsGrantInfluence
 
-Project: `YL.Prisoners.LordsGrantInfluence`
+Project: `YL.Prisoners.CapturedLordsGrantInfluence`
 Tier: `PUBLIC_PORTFOLIO`
 Visibility: `PUBLIC_GITHUB`
 
@@ -63,7 +63,7 @@ Configured workspaces run patch/snapshot operations from the workspace root. Mul
 
 When `workstreamRouting.enabled`, per-path base state/hash is the optimistic concurrency authority. `docs/work/active/<workstream>.json` is optional and reserves paths only for deliberate pre-leases. Ordinary implementation needs no lease. Touched-path drift or another workstream's reservation rejects before writes; unrelated reservations do not block disjoint patches. Control patches stay separate from implementation.
 
-Manual patch metadata uses root `.ai-repo-workflow-patch.json` schema 2. Root keys: `schemaVersion`, `workstreamId`, `workstreamPurpose`, `patchId`, `targetRepository`, optional `baseReference`, `files`; no extras. Follow `config/ai-repo-workflow/agent-workflow-summary.jsonc` → `patchMetadataContract`. `files[].baseState`: existing file=`file` + `baseSha256`; directory=`directory` + `baseSha256`; absent=`absent` without `baseSha256`. Never use `present`/`exists` or omit `baseState`. Name patches `<project>-patch-<workstream>-<patch-id>.zip`.
+Manual patch metadata uses root `.ai-repo-workflow-patch.json` schema 2. Root keys: `schemaVersion`, `workstreamId`, `workstreamPurpose`, `patchId`, `targetRepository`, optional `baseReference`, `files`; no extras. Follow `config/ai-repo-workflow/agent-workflow-summary.jsonc` → `patchMetadataContract`. `files[].baseState`: existing file=`file` + `baseSha256`; directory=`directory` + `baseSha256`; absent=`absent` without `baseSha256`. Never use `present`/`exists` or omit `baseState`. Intentional deletes use root `delete.txt`; follow `patchZipRules.deleteManifest` for its format and metadata interaction. Name patches `<project>-patch-<workstream>-<patch-id>.zip`.
 
 Apply Patch never runs Verify. After writes it runs present `patch.after.ps1`, then `scripts/test.ps1`; bundles defer both until child writes finish. Incomplete apply skips the hook but still runs tests. ZIPs contain only target-relative changes plus metadata.
 
