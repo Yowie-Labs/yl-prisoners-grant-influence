@@ -244,7 +244,7 @@
       "source/docs/config/scripts",
       "agent instructions",
       "current patch-run diagnostics",
-      "flat workspace/project snapshot content when workspace.enabled is true; custom child producers may appear as marked legacy nested zips"
+      "workspace child snapshots when workspace.enabled is true"
     ],
     "exclude": [
       "old snapshots",
